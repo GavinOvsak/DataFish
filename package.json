@@ -1,0 +1,27 @@
+{
+  "name": "DataFish",
+  "subdomain": "datafish",
+  "repository": "https://github.com/GavinOvsak/DataFish",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "version": "0.1.0-392",
+  "engines": {
+    "node": "0.10.x"
+  },
+  "dependencies": {
+    "express-partials": "0.2.0",
+    "connect-ensure-login": "0.1.1",
+    "mongoose": "3.8.8",
+    "passport": "0.2.0",
+    "lodash": "2.4.1",
+    "express": "3.4.7",
+    "socket.io": "0.9.16",
+    "passport-local": "1.0.0",
+    "ejs": "0.8.5",
+    "bcrypt": "0.7.8"
+  },
+  "bundleDependencies": [
+    "./secrets.json"
+  ]
+}
