@@ -111,18 +111,15 @@ console.log('Server running at http://localhost:8081')
 io = socket.listen(httpServer)
 io.set('log level', 0)
 
-console.log(secrets)
-
 app.get('/', (req, res) ->
   res.json('Hello, World!')
 )
 
-/user?id=10987987&key=9769865
+#/user?id=10987987&key=9769865
 
 app.get('/user', (req, res) ->
-if (req.query.id != null) {
-  req.query.id
-}
+#if req.query.id != null
+#  req.query.id
 
 
 )

@@ -31,32 +31,43 @@ db.once('open', function() {
   return console.log('Connected to the database!');
 });
 
+string(num(array(float)));
+
 User_Schema = mongoose.Schema({
   name: String,
-  description: String,
-  url: String,
-  owner: String,
-  code: String
+  password: String,
+  levels: String,
+  following: Array,
+  favorites: Array,
+  owner: Array,
+  editor: Array,
+  picture: String,
+  bio: String,
+  isVerified: Boolean
 });
 
 User = mongoose.model('User', User_Schema);
 
 Stream_Schema = mongoose.Schema({
   name: String,
+  unit: String,
+  genre: String,
   description: String,
-  url: String,
-  owner: String,
-  code: String
+  points: Number,
+  website: String,
+  picture: String,
+  average: Number,
+  subscriptions: Array
 });
 
 Stream = mongoose.model('Stream', Stream_Schema);
 
 Point_Schema = mongoose.Schema({
-  name: String,
-  description: String,
-  url: String,
-  owner: String,
-  code: String
+  name: Number,
+  source: String,
+  time: String,
+  created: String,
+  creator: Number
 });
 
 Point = mongoose.model('Point', Point_Schema);
@@ -132,8 +143,6 @@ console.log('Server running at http://localhost:8081');
 io = socket.listen(httpServer);
 
 io.set('log level', 0);
-
-console.log(secrets);
 
 app.get('/', function(req, res) {
   return res.json('Hello, World!');
