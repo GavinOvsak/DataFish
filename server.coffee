@@ -23,7 +23,6 @@ db.once('open', ->
   )
 )
 
-
 ###
 ToDo list:
 - Get requests for public data
@@ -155,12 +154,17 @@ app.get('/', (req, res) ->
 
 #/user?id=10987987&key=9769865
 
+
+
 app.get('/user', (req, res) ->
 #if req.query.id != null
 #  req.query.id
-
-
-
+  if req.query.id?
+    User.find({'_id': req.query.id}, (err, users) ->
+      req.json(users)
+      )
+  else
+    res.json(null)
 )
 
 app.post('/user', (req, res) ->

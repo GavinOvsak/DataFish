@@ -187,7 +187,17 @@ app.get('/', function(req, res) {
   return res.json('Hello, World!');
 });
 
-app.get('/user', function(req, res) {});
+app.get('/user', function(req, res) {
+  if (req.query.id != null) {
+    return User.find({
+      '_id': req.query.id
+    }, function(err, users) {
+      return req.json(users);
+    });
+  } else {
+    return res.json(null);
+  }
+});
 
 app.post('/user', function(req, res) {});
 
