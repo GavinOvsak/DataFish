@@ -27,8 +27,6 @@ ToDo list:
 - Make API for new stream, new data, updates
 ###
 
-string num array float
-
 User_Schema = mongoose.Schema({
   name: String,
   password: String,
