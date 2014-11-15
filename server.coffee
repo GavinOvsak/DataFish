@@ -27,7 +27,6 @@ db.once('open', ->
   )
 )
 
-
 passport.serializeUser (user, done) ->
   done null, user._id
 
@@ -73,7 +72,9 @@ app.use '/js', express.static __dirname + '/js'
 app.use '/css', express.static(__dirname + '/css')
 app.use '/static', express.static(__dirname + '/public')
 
-
+app.get('/', (req, res) ->
+  res.json('Hello, World!')
+)
 
 
 

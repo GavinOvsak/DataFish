@@ -1,0 +1,4 @@
+# DataFish gitignore
+
+### Secrets ###
+secrets.json

@@ -103,3 +103,7 @@ app.use('/js', express["static"](__dirname + '/js'));
 app.use('/css', express["static"](__dirname + '/css'));
 
 app.use('/static', express["static"](__dirname + '/public'));
+
+app.get('/', function(req, res) {
+  return res.json('Hello, World!');
+});
