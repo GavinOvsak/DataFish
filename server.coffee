@@ -17,7 +17,12 @@ db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', ->
   console.log('Connected to the database!')
+  User.find({}, (err, users)->
+    console.log('All users: ')
+    console.log(users)
+  )
 )
+
 
 ###
 ToDo list:
@@ -27,12 +32,11 @@ ToDo list:
 - Make API for new stream, new data, updates
 ###
 
-string num array float
 
 User_Schema = mongoose.Schema({
   name: String,
   password: String,
-  levels: String,
+  level: Number,
   following: Array, #array of ids
   favorites: Array,
   owner: Array,
@@ -74,6 +78,26 @@ Point_Schema = mongoose.Schema({
 });
 
 Point = mongoose.model('Point', Point_Schema)
+
+
+if false
+  newUser = new User({
+    name: 'Bob1',
+    password: 'password',
+    level: 1,
+    following: [],
+    favorites: [],
+    owner: [],
+    editor: [],
+    picture: '',
+    bio: '',
+    isVerified: false
+  })
+  newUser.save((err)->
+    console.log(err) if err?
+    console.log('Saved')
+    )
+
 
 passport.serializeUser (user, done) ->
   done null, user._id
@@ -127,6 +151,7 @@ io.set('log level', 0)
 
 app.get('/', (req, res) ->
   res.json('Hello, World!')
+
 )
 
 #/user?id=10987987&key=9769865
