@@ -19,6 +19,14 @@ db.once('open', ->
   console.log('Connected to the database!')
 )
 
+###
+ToDo list:
+- Get requests for public data
+- Make Authentication for Apps
+- Make Authentication for Websites
+- Make API for new stream, new data, updates
+###
+
 string num array float
 
 User_Schema = mongoose.Schema({
@@ -31,10 +39,17 @@ User_Schema = mongoose.Schema({
   editor: Array,
   picture: String,
   bio: String,
-  isVerified: Boolean,
+  isVerified: Boolean
 });
 
 User = mongoose.model('User', User_Schema)
+
+Client_Schema = mongoose.Schema({
+  user_id: String,
+  socket: Object
+});
+
+Client = mongoose.model('Client', User_Schema)
 
 Stream_Schema = mongoose.Schema({
   name: String,
@@ -120,6 +135,7 @@ app.get('/', (req, res) ->
 app.get('/user', (req, res) ->
 #if req.query.id != null
 #  req.query.id
+
 
 
 )
