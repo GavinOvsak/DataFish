@@ -3,7 +3,7 @@ socket = require('socket.io')
 express = require('express')
 LocalStrategy = require('passport-local').Strategy
 bcrypt = require('bcrypt')
-#secrets = require('./secrets.json')
+secrets = require('./secrets.json')
 http = require('http')
 passport = require('passport')
 mongoose = require('mongoose')
@@ -11,17 +11,44 @@ LocalStrategy = require('passport-local').Strategy
 
 salt = bcrypt.genSaltSync(10)
 
-###
 mongoose.connect secrets.mongoURL
-
 
 db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', ->
-  vOS_App.find({}, ->
-#    console.log(arguments);    
-  )
 )
+
+
+User_Schema = mongoose.Schema({
+  name: String,
+  description: String,
+  url: String, 
+  owner: String,
+  code: String
+});
+
+User = mongoose.model('User', User_Schema)
+
+Stream_Schema = mongoose.Schema({
+  name: String,
+  description: String,
+  url: String, 
+  owner: String,
+  code: String
+});
+
+Stream = mongoose.model('Stream', Stream_Schema)
+
+Point_Schema = mongoose.Schema({
+  name: String,
+  description: String,
+  url: String, 
+  owner: String,
+  code: String
+});
+
+Point = mongoose.model('Point', Point_Schema)
+
 
 passport.serializeUser (user, done) ->
   done null, user._id
@@ -34,7 +61,7 @@ passport.deserializeUser (obj, done) ->
 passport.use new LocalStrategy { usernameField: 'email', passwordField: 'password' }, 
   (email, password, done) ->
 
-    #
+    ###
     User.find { email: email}, 
       (err, people) ->
         console.log(people)
@@ -47,8 +74,7 @@ passport.use new LocalStrategy { usernameField: 'email', passwordField: 'passwor
             once = false
         if once
           done(null)
-    #
-###
+    ###
 
 app = express()
 
@@ -68,13 +94,55 @@ app.use '/js', express.static __dirname + '/js'
 app.use '/css', express.static(__dirname + '/css')
 app.use '/static', express.static(__dirname + '/public')
 
-app.get('/', (req, res) ->
-  res.json('Hello, World!')
-)
-
 httpServer = http.createServer(app).listen(8081)
 
 io = socket.listen(httpServer)
 io.set('log level', 0)
+
+console.log(secrets)
+
+app.get('/', (req, res) ->
+  res.json('Hello, World!')
+)
+
+app.get('/user', (req, res) ->
+
+)
+
+app.post('/user', (req, res) ->
+  
+)
+
+app.delete('/user', (req, res) ->
+  
+)
+
+app.get('/stream', (req, res) ->
+
+)
+
+app.post('/stream', (req, res) ->
+  
+)
+
+app.delete('/stream', (req, res) ->
+  
+)
+
+app.get('/point', (req, res) ->
+
+)
+
+app.post('/point', (req, res) ->
+  
+)
+
+app.delete('/point', (req, res) ->
+  
+)
+
+
+
+
 
 
