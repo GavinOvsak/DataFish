@@ -1,14 +1,9 @@
 
-array = [0..10]
-for a in array
-	console.log(a)
-
-
 socket = require('socket.io')
 express = require('express')
 LocalStrategy = require('passport-local').Strategy
 bcrypt = require('bcrypt')
-secrets = require('./secrets.json')
+#secrets = require('./secrets.json')
 http = require('http')
 passport = require('passport')
 mongoose = require('mongoose')
@@ -16,6 +11,7 @@ LocalStrategy = require('passport-local').Strategy
 
 salt = bcrypt.genSaltSync(10)
 
+###
 mongoose.connect secrets.mongoURL
 
 
@@ -38,7 +34,7 @@ passport.deserializeUser (obj, done) ->
 passport.use new LocalStrategy { usernameField: 'email', passwordField: 'password' }, 
   (email, password, done) ->
 
-    ###
+    #
     User.find { email: email}, 
       (err, people) ->
         console.log(people)
@@ -51,13 +47,13 @@ passport.use new LocalStrategy { usernameField: 'email', passwordField: 'passwor
             once = false
         if once
           done(null)
-    ###
+    #
+###
 
 app = express()
 
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'ejs'
-app.use partials()
 #app.use express.logger()
 app.use express.cookieParser()
 app.use express.bodyParser()
@@ -76,7 +72,9 @@ app.get('/', (req, res) ->
   res.json('Hello, World!')
 )
 
+httpServer = http.createServer(app).listen(8081)
 
-
+io = socket.listen(httpServer)
+io.set('log level', 0)
 
 
