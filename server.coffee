@@ -19,32 +19,43 @@ db.once('open', ->
   console.log('Connected to the database!')
 )
 
+string num array float
+
 User_Schema = mongoose.Schema({
   name: String,
-  description: String,
-  url: String, 
-  owner: String,
-  code: String
+  password: String,
+  levels: String,
+  following: Array, #array of ids
+  favorites: Array,
+  owner: Array,
+  editor: Array,
+  picture: String,
+  bio: String,
+  isVerified: Boolean,
 });
 
 User = mongoose.model('User', User_Schema)
 
 Stream_Schema = mongoose.Schema({
   name: String,
+  unit: String,
+  genre: String,
   description: String,
-  url: String, 
-  owner: String,
-  code: String
+  points: Number,
+  website: String,
+  picture: String,
+  average: Number,
+  subscriptions: Array #list of users to notify on update event
 });
 
 Stream = mongoose.model('Stream', Stream_Schema)
 
 Point_Schema = mongoose.Schema({
-  name: String,
-  description: String,
-  url: String, 
-  owner: String,
-  code: String
+  name: Number,
+  source: String,
+  time: String, #date
+  created: String, #date
+  creator: Number #creater id
 });
 
 Point = mongoose.model('Point', Point_Schema)
@@ -106,7 +117,13 @@ app.get('/', (req, res) ->
   res.json('Hello, World!')
 )
 
+/user?id=10987987&key=9769865
+
 app.get('/user', (req, res) ->
+if (req.query.id != null) {
+  req.query.id
+}
+
 
 )
 
