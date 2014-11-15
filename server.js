@@ -27,7 +27,9 @@ db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 
-db.once('open', function() {});
+db.once('open', function() {
+  return console.log('Connected to the database!');
+});
 
 User_Schema = mongoose.Schema({
   name: String,
@@ -124,6 +126,8 @@ app.use('/css', express["static"](__dirname + '/css'));
 app.use('/static', express["static"](__dirname + '/public'));
 
 httpServer = http.createServer(app).listen(8081);
+
+console.log('Server running at http://localhost:8081');
 
 io = socket.listen(httpServer);
 
