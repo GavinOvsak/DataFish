@@ -19,8 +19,6 @@ db.once('open', ->
   console.log('Connected to the database!')
 )
 
-string num array float
-
 User_Schema = mongoose.Schema({
   name: String,
   password: String,
