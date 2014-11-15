@@ -73,7 +73,6 @@ Point_Schema = mongoose.Schema({
 
 Point = mongoose.model('Point', Point_Schema)
 
-
 passport.serializeUser (user, done) ->
   done null, user._id
 
