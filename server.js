@@ -168,7 +168,7 @@ passport.use(new LocalStrategy({
     if (err != null) {
       done(err);
     }
-    if (bcrypt.compareSync(password, person.password)) {
+    if ((person != null) && bcrypt.compareSync(password, person.password)) {
       return done(null, person);
     } else {
       return done(null);
@@ -250,9 +250,11 @@ app.post('/register', function(req, res) {
           isVerified: false
         });
         newUser.save();
-        return req.login(newUser, function() {
+        req.login(newUser, function() {
           return res.json(newUser);
         });
+        console.log('New member, redirecting');
+        return res.redirect('/dashboard');
       } else {
         return res.json('Already exists');
       }
@@ -282,6 +284,7 @@ app.get('/dashboard', function(req, res) {
   if (req.user != null) {
     return res.render('dash.html');
   } else {
+    console.log('not logged in');
     return res.redirect('/');
   }
 });
