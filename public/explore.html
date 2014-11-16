@@ -202,11 +202,11 @@
                         </div>
                     </div>
                     <div class="midbar">
-                        <div class="row col-md-8 card-value">{{bubbles[stream._id].recent.value}}</div> <!-- Edit this for value -->
-                        <div class="row col-md-4 card-unit">People</div> <!-- Edit this for currency -->
+                        <div class="row col-md-8 card-value">{{bubbles[stream._id].recent}}</div> <!-- Edit this for value -->
+                        <div class="row col-md-4 card-unit">People</div> <!-- Edit this for currency{{bubbles[stream._id].recent.time}} -->
                     </div>
                     <div class="bottombar">
-                        <div class="col-md-offset-1 row col-md-5 card-date">{{bubbles[stream._id].recent.time}}</div>
+                        <div class="col-md-offset-1 row col-md-5 card-date"></div>
                     </div>
                 </div>
             </div>
@@ -273,9 +273,14 @@
                     $scope.bubbles = {};
                     $http.get('/stream?id=' + $scope.all[i]._id).success((function(i){return function(data) {
                         var streamid = $scope.all[i]._id;
+                        console.log(data)
                         $scope.bubbles[streamid] = data;
-                        $scope.bubbles[streamid].recent = data.points[data.points.length-1];
-                        console.log(data.points[data.points.length-1]);
+                        latest = 0;
+                        if (data.latestValue != null) {
+                            latest = data.latestValue;
+                        }
+                        $scope.bubbles[streamid].recent = latest;
+                        console.log(data.latestValue);
 
                         if ($scope.bubbles[streamid].genre == 'health') {
                             $scope.bubbles[streamid].genreSrc = "/img/Health.png";

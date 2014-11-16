@@ -273,8 +273,8 @@
             $http.get('/stream?id=' + $scope.following[i]).success((function(i){return function(data) {
                 var streamid = $scope.following[i];
                 $scope.bubbles[streamid] = data;
-                $scope.bubbles[streamid].recent = data.points[data.points.length-1];
-                console.log(data.points[data.points.length-1]);
+                $scope.bubbles[streamid].recent = data.latestValue;
+                console.log(data.latestValue);
 
 
                 if ($scope.bubbles[streamid].genre == 'health') {
