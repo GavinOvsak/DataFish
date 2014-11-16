@@ -142,7 +142,7 @@
                     <div class="form-group">
                         <label for="dataStream">Stream:</label>
                         <select type="text" class="form-control" id="dataStream">
-                            <option value="546846819f10b2dc7e04a224">Durham Weather</option>
+                            <option ng-repeat="stream in streams" value="546846819f10b2dc7e04a224">Durham Weather</option>
                             <option value="546853c0f48b87e385ddf7fd">People with Ebola</option>
                         </select>
                     </div>
@@ -246,21 +246,29 @@
           
           console.log($scope.users);
           
-          $scope.streams = $scope.users.following;
-          for (var j = 0; j < $scope.users.owner.length; j ++) {
-            $scope.streams.push($scope.users.owner[j]);
-          }
-          console.log($scope.streams);
+          $scope.following = $scope.users.following;
+          $scope.owner = $scope.users.owner;
 
-          for (i = 0; i < $scope.streams.length; i++) {
-            console.log($scope.streams[i]);
+          /*for (var j = 0; j < $scope.users.owner.length; j ++) {
+            $scope.following.push($scope.users.owner[j]);
+          }*/
+
+          $scope.ownerObj = []
+          for (i = 0; i < $scope.owner.length; i++) {
+            $http.get('/stream?id=' + $scope.owner[i]).success((function(i){return function(data) {
+                $scope.ownerObj.push(data);
+            }; })(i))
+          }
+
+          for (i = 0; i < $scope.following.length; i++) {
+            console.log($scope.following[i]);
 
             
             //(function(i){return function(data) {}; })(i)
             
             $scope.bubbles = {};
-            $http.get('/stream?id=' + $scope.streams[i]).success((function(i){return function(data) {
-                var streamid = $scope.streams[i];
+            $http.get('/stream?id=' + $scope.following[i]).success((function(i){return function(data) {
+                var streamid = $scope.following[i];
                 console.log('/stream?id=' + streamid);
     
                 $scope.bubbles[streamid] = data;

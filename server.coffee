@@ -274,6 +274,7 @@ app.get('/userPage', (req, res) ->
 
 publiclyViewableUser = (user) ->
   publicUser = {
+    _id: user._id,
     name: user.name,
     email: user.email,
     bio: user.bio,
