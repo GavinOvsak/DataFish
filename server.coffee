@@ -154,7 +154,7 @@ passport.use new LocalStrategy { usernameField: 'email', passwordField: 'passwor
 
 app = express()
 
-app.set 'views', __dirname + '/views'
+app.set 'views', __dirname + '/public'
 app.set 'view engine', 'ejs'
 #app.use express.logger()
 app.use express.cookieParser()
@@ -163,10 +163,13 @@ app.use express.errorHandler { dumpExceptions: true, showStack: true }
 app.use express.session secret: 'data fish secret'
 app.use passport.initialize()
 app.use passport.session()
+app.engine('html', require('ejs').renderFile);
 #app.use(flash())
 
 app.use app.router
-app.use '/js', express.static __dirname + '/js'
+app.use '/img', express.static __dirname + '/img'
+app.use '/font-awesome', express.static __dirname + '/font-awesome'
+app.use '/js', express.static(__dirname + '/js')
 app.use '/css', express.static(__dirname + '/css')
 app.use '/static', express.static(__dirname + '/public')
 
@@ -218,8 +221,9 @@ app.post('/register', (req, res) ->
 )
 
 app.get('/', (req, res) ->
-  console.log(req.user)
-  res.json('Hello, World!')
+#  console.log(req.user)
+  res.render('home')
+#  res.json('nope')
 )
 
 app.get('/getToken', (req, res) ->

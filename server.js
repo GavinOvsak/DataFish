@@ -178,7 +178,7 @@ passport.use(new LocalStrategy({
 
 app = express();
 
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/public');
 
 app.set('view engine', 'ejs');
 
@@ -199,7 +199,13 @@ app.use(passport.initialize());
 
 app.use(passport.session());
 
+app.engine('html', require('ejs').renderFile);
+
 app.use(app.router);
+
+app.use('/img', express["static"](__dirname + '/img'));
+
+app.use('/font-awesome', express["static"](__dirname + '/font-awesome'));
 
 app.use('/js', express["static"](__dirname + '/js'));
 
@@ -257,8 +263,7 @@ app.post('/register', function(req, res) {
 });
 
 app.get('/', function(req, res) {
-  console.log(req.user);
-  return res.json('Hello, World!');
+  return res.render('home');
 });
 
 app.get('/getToken', function(req, res) {
