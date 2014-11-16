@@ -10,176 +10,448 @@
     <title>Datafish</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
 
     <!-- Add custom CSS here -->
     <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
-    <link href="css/stylish-portfolio.css" rel="stylesheet">
-    <!--link href="css/flat-ui.css" rel="stylesheet"-->
+    <link href="/css/stylish-portfolio.css" rel="stylesheet">
+    <link href="css/flat-ui.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="javascripts/sidr/stylesheets/jquery.sidr.light.scss">
+<!--    <script src="/js/jquery.fittext.js"></script>-->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 </head>
 
-<body id="page-top" data-spy="scroll" data-target=".navbar-custom">
-      <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+<body ng-app="userApp" ng-controller="UserCtrl" id="page-top" class="header" data-spy="scroll" data-target=".navbar-custom">
+
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                    <i class="fa fa-bars"></i>
+                </button>
                 <a href="/dashboard"><img src="img/logo.png"></a>
             </div>
+
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+            <div class="navbar-right collapse navbar-collapse navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
                     <li class="hidden">
                         <a href="#page-top"></a>
                     </li>
-                </ul>
+
+                    <li id="explore">
+                        <a href="/explore">Explore</a>
+                    </li>
+                    <li id="following">
+                        <a href="/following">Following</a>
+                    </li>
+                    <li id="favorites">
+                        <a href="/mystreams">My Streams</a>
+                    </li>
+                    <!--li id="search" class="search">
+                        
+
+                           <input ng-model="query" id="logEmail" type="text" placeholder="Search" />
+                           <span class="input-group-btn">
+                                <button type="submit" class="btn"><span class="fui-search"></span></button>
+                            </span>    
+                        
+                    </li--> <!--Search: (outside brackets) input ng-model="query" type="text"/-->
+                   
+                    <li id="new-datapoint">
+                        <a href="#newBubbleModal" data-toggle="modal" data-target="#newBubbleModal">New Databubble</a>
+                    </li>
+                    <li id="options" >
+                        <a href="#">{{users.name}} <i class="fa fa-angle-down"></i></a>
+                        <ul class="subnav">
+                            <li><a href="/account">Profile</a></li>
+                             <li id="new-stream">
+                                <a href="#newStreamModal" data-toggle="modal" data-target="#newStreamModal">New Stream</a>
+                            </li>
+                            <li><a href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
             </div>
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container -->
     </nav>
-    <video autoplay loop poster="img/fish.jpg" id="bgvid">
-        <!--source src="polina.webm" type="video/webm"-->
-        <source src="img/FishyVideo.mp4" type="video/mp4">
-    </video>
-
-    <!-- Full Page Image Header Area -->
-    <div id="top" class="header-front container">
-        <!-- Split in half for logo and login -->
-        <div class="vert-text row col-md-6 col-xs-12">
-            <!--h1>Datafish</h1-->
-            <img src="img/datafish.png">
-        </div>
-        <div class="vert-text row col-md-6 col-xs-12">
-            <h3>Start <strong><em>swimming</em></strong></h3>
-             <!-- login page -->
-            <div class="flat-form">
-                <ul class="tabs">
-                    <li>
-                        <a href="#login" class="active">Login</a>
-                    </li>
-                    <li>
-                        <a href="#register">Register</a>
-                    </li>
-                    <li>
-                        <a href="#reset">Reset Password</a>
-                    </li>
-                </ul>
-                <div id="login" class="form-action show">
-                    <form action="javascript:myFunction(); return false;">
-
-                        <input id="logEmail" type="text" placeholder="Email" />
-                        <input id="logPassword" type="password" placeholder="Password" />
-                        <input id="logSubmit" type="submit" value="Submit" class="button" />
-                          
-                    </form>
+    
+    <div class="modal fade" id="newStreamModal" tabindex="-1" role="dialog" aria-labelledby="newStreamModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">New Stream</h4>
                 </div>
-                <!--/#login.form-action-->
-                <div id="register" class="form-action hide">
-                    <form action="javascript:myFunction(); return false;">
-                        <input id="regName" type="text" placeholder="Name" />
-                        <input id="regEmail" type="text" placeholder="Email" />
-                        <input id="regPassword" type="password" placeholder="Password" />
-                        <input id="regSubmit" type="submit" value="Sign Up" class="button" />
-                    </form>
+                <div class="modal-body">
+                    <!--
+                        Name, Genre, Unit, Description, website, tags
+                    -->
+                    <div class="form-group">
+                        <label for="streamName">Stream Name:</label>
+                        <input type="text" class="form-control" id="streamName">
+                    </div>
+                    <div class="form-group">
+                        <label for="streamGenre">Stream Genre:</label>
+                        <select type="text" class="form-control" id="streamGenre">
+                            <option value="tv">TV</option>
+                            <option value="sports">Sports</option>
+                            <option value="politics">Politics</option>
+                            <option value="inequality">Inequality</option>
+                            <option value="health">Health</option>
+                            <option value="finance">Finance</option>
+                            <option value="environment">Environment</option>
+                            <option value="energy">Energy</option>
+                            <option value="education">Education</option>
+                            <option value="business">Business</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="streamUnit">Stream Unit:</label>
+                        <input type="text" class="form-control" id="streamUnit">
+                    </div>
+                    <div class="form-group">
+                        <label for="streamDescription">Stream Description:</label>
+                        <textarea class="form-control" rows="3" id="streamDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="streamWebsite">Stream Website:</label>
+                        <input type="text" class="form-control" id="streamWebsite">
+                    </div>
+                    <div class="form-group">
+                        <label for="streamTags">Stream Tags (comma separated):</label>
+                        <input type="text" class="form-control" id="streamTags">
+                    </div>
                 </div>
-                <!--/#register.form-action-->
-                <div id="reset" class="form-action hide">
-                    <form action="javascript:myFunction(); return false;">
-                        <input id="resetEmail" type="text" placeholder="Email" />
-                        <input id="resetSubmit" type="submit" value="Send" class="button" />
-                    </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createStream">Create New Stream</button>
                 </div>
-                <!--/#register.form-action-->
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="newBubbleModal" tabindex="-1" role="dialog" aria-labelledby="newBubbleModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">New Data Bubble</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="dataStream">Stream:</label>
+                        <select type="text" class="form-control" id="dataStream">
+                            <option ng-repeat="obj in ownerObjs" value="{{obj._id}}">{{obj.name}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataValue">Data Value (Number):</label>
+                        <input type="text" class="form-control" id="dataValue">
+                    </div>
+                    <div class="form-group">
+                        <label for="dataTime">Data Time:</label>
+<!--                        <input type="checkbox" id="now" value="">Now</label>-->
+                        <div class='input-group date'>
+                            <input type='text' id='dataTime' class="form-control" />
+                            <span class="input-group-addon">Now</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataSource">Data Source (Where did you get this info?):</label>
+                        <input type="text" class="form-control" id="dataSource">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createBubble">Create New Data Bubble</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div  ng-app="userApp" ng-controller="UserCtrl">
+        <div id="top" class="container dash">
+            <!-- <script type="text/javascript">
+                $('#newStreamModal').modal()
+            </script>-->
+           <!--h1>Stream</h1-->
+           <div class="placeholder"></div>
+           <div ng-repeat="stream in following" class="row col-md-4 col-xs-4">
+               <div class="flat-card">
+                    <div class="topbar">
+
+                        <div class="row col-md-2 col-xs-2 card-genre">
+                            <a href="#about">
+                                <img align="left" src="{{bubbles[stream].genreSrc}}"> <!-- Edit this for specific genre -->
+                            </a>
+                            
+                        </div>
+                        <div class="row col-md-offset-1 col-md-7 col-xs-offset-1 col-xs-7 card-title">
+                            <a ng-href="/streamPage?id={{stream}}">{{bubbles[stream].name}}</a> <!-- Edit this for specific title -->
+                        </div>
+                        <div class=" col-md-1 col-xs-offset-1 col-xs-1  col-xs-offset-1 card-follow">
+                            <a href="#about">
+                                <img align="right" src="img/PlusSign.png"> <!-- Edit this if not a plus sign -->
+                            </a>
+                            
+                        </div>
+                    </div>
+                    <div class="midbar">
+                        <div class="row col-md-8 card-value">{{bubbles[stream].recent.value}}</div> <!-- Edit this for value -->
+                        <div class="row col-md-4 card-unit">People</div> <!-- Edit this for currency -->
+                    </div>
+                    <div class="bottombar">
+                        <div class="col-md-offset-1 row col-md-5 card-date">{{bubbles[stream].recent.time}}</div>
+                    </div>
+                </div>
+            </div>
+            
+             
+            </div>
     
-    <!-- JavaScript -->
-    <script class="cssdeck" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+
+
+    </div>
+
+    <!-- Custom JavaScript for the Side Menu and Smooth Scrolling -->
+
+<!---      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>-->
     <script src="js/jquery-1.10.2.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+
+    <!--script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.14.2/TweenMax.min.js"></script-->
     <script src="js/bootstrap.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/grayscale.js"></script>
+    <script src="/js/jquery.textfill.js"></script>
+    <script src="/js/moment.js"></script>
+    <script src="/js/bootstrap-datetimepicker.js"></script>
+
+
+    <!-- Include jQuery -->
+<!--    <script src="javascripts/jquery.js"></script>-->
+    <!-- Include the Sidr JS -->
+    <!--<script src="javascripts/sidr/jquery.sidr.js"></script>-->
+
     <script>
-        var socket = io.connect();
-        socket.on('newData', function(data) {
-            console.log(data);
-        })
-        /*socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
-        socket.emit('update', {
-            stream: '546853c0f48b87e385ddf7fd',
-            value: 20,
-            time: '100000',
-            source: 'Me'
-        });
-*/
-    </script>
-    <script>
-    (function( $ ) {
-
-        $('#logSubmit').click(function() {
-            $.post('/login', {
-                email: $('#logEmail').val(),
-                password: $('#logPassword').val()
-            }, function(data) {
-                window.location = '/dashboard'
-            }).fail(function() {
-                alert( "Incorrect Log In Information" );
-            });
-        });
-
-        $('#regSubmit').click(function() {
-            $.post('/register', {
-                name: $('#regName').val(),
-                email: $('#regEmail').val(),
-                password: $('#regPassword').val()
-            }, function(data) {
-                window.location = '/dashboard'
-            }).fail(function() {
-                alert( "Account exists for that email" );
-            });
-        });
-
-      // constants
-      var SHOW_CLASS = 'show',
-          HIDE_CLASS = 'hide',
-          ACTIVE_CLASS = 'active';
+      var app = angular.module('userApp', []);
       
-      $( '.tabs li a').click(function(e){
-        e.preventDefault();
-        var $tab = $( this ),
-             href = $tab.attr( 'href' );
+      app.controller('UserCtrl', function($scope, $http){
         
-         $( '.active' ).removeClass( ACTIVE_CLASS );
-         $tab.addClass( ACTIVE_CLASS );
-      
-         $( '.show' )
-            .removeClass( SHOW_CLASS )
-            .addClass( HIDE_CLASS )
-            .hide();
-        
-          $(href)
-            .removeClass( HIDE_CLASS )
-            .addClass( SHOW_CLASS )
-            .hide()
-            .fadeIn( 550 );
+        $http.get('/user').success(function(data) {
+          console.log($scope.users);
+          
+          $scope.owner = $scope.users.owner;
+
+          /*for (var j = 0; j < $scope.users.owner.length; j ++) {
+            $scope.following.push($scope.users.owner[j]);
+          }*/
+
+
+          $scope.ownerObjs = []
+          
+          for (i = 0; i < $scope.owner.length; i++) {
+            $http.get('/stream?id=' + $scope.owner[i]).success((function(i){return function(data) {
+                $scope.ownerObjs.push(data);
+            }; })(i))
+          }
+
+            $http.get('/hack/allStreams').success(function(data) {
+                $scope.all = data;
+                console.log($scope.all);
+                for (i = 0; i < $scope.all.length; i++) {
+                    console.log($scope.all[i]);
+                    //(function(i){return function(data) {}; })(i)
+                    
+                    $scope.bubbles = {};
+                    $http.get('/stream?id=' + $scope.all[i]).success((function(i){return function(data) {
+                        var streamid = $scope.all[i];
+                        $scope.bubbles[streamid] = data;
+                        $scope.bubbles[streamid].recent = data.points[data.points.length-1];
+                        console.log(data.points[data.points.length-1]);
+
+                        if ($scope.bubbles[streamid].genre == 'health') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Health.png";
+                        
+                        } else if ($scope.bubbles[streamid].genre == 'finance') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'environment') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'politics') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'sports') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'tv') {
+                            $scope.bubbles[streamid].genreSrc = "/img/TV.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'energy') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'education') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Education.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'business') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Business.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'inequality') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
+                           
+                        }
+
+                }; })(i))
+            });
+
+           
+
+          }
+          console.log($scope.bubbles)
+
+        });
       });
-    })( jQuery );
-
-    $("#menu-close").click(function(e) {
-        e.preventDefault();
-        $("#sidebar-wrapper").toggleClass("active");
-    });
     </script>
+
+    <!--script>
+      var app = angular.module('userApp', []);
+      app.controller('UserCtrl', function($scope, $http){
+        $http.get('/user').success(function(data) {
+          $scope.users = data;
+          console.log("working");
+        });
+      });
+    </script-->
+
+    
+
+    <!--script>
+      var app = angular.module('userApp', []);
+      app.controller('UserCtrl', function($scope, $http){
+        $http.get('/user').success(function(data) {
+          $scope.users = data;
+          console.log("working");
+        });
+      });
+    </script-->
+
+
+ 
+
     <script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#sidebar-wrapper").toggleClass("active");
-    });
+        $(document).ready(function() {
+            var socket = io.connect();
+            socket.on('newData', function(data) {
+                console.log(data);
+            })
+            socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
+            
+            $('#dataTime').datetimepicker();
+
+            $('#createStream').click(function(){
+                if ($('#streamName').val() != '' && $('#streamUnit').val()!= '') {
+                    $.post('/stream', {
+                        name: $('#streamName').val(),
+                        genre: $('#streamGenre').val(),
+                        unit: $('#streamUnit').val(),
+                        description: $('#streamDescription').val(),
+                        website: $('#streamWebsite').val(),
+                        tags: $('#streamTags').val().split(',')
+                    }, function(data) {
+                        console.log('success');
+                        console.log(data);
+                        window.location = '/streamPage?id=' + data._id;
+                    })
+                    $('#streamName').val('')
+                    $('#streamGenre').val('')
+                    $('#streamUnit').val('')
+                    $('#streamDescription').val('')
+                    $('#streamWebsite').val('')
+                    $('#streamTags').val('')
+                    $('#newStreamModal').modal('hide');
+                }
+            })
+
+            // $('#now').click(function() {
+            //     var thisCheck = $(this);
+            //     if (thisCheck.is (':checked')) {
+            //         //$('#dataTime').val('now');
+            //         console.log('checked');
+            //     } else {
+            //         console.log('unchecked');
+            //     }
+            // });
+
+
+            $('#createBubble').click(function(){
+
+                var time = 0;
+                //Need to fix up time
+                d = new Date($('#dataTime').val())
+                debugger
+                time = d.getTime();
+                // if ($('#now').checked()) {
+                //     time = Date.now();
+                // } else {
+                // }
+
+                if ($('#dataStream').val() != '' && $('#dataValue').val()!= '' && $('#dataSource').val()!= '') {
+                    $.post('/point', {
+                        stream_id: $('#dataStream').val(),
+                        value: $('#dataValue').val(),
+                        source: $('#dataSource').val(),
+                        time: time
+                    }, function(data) {
+                        console.log('success');
+                        console.log(data);
+                    })
+                    $('#dataStream').val('')
+                    $('#dataValue').val('')
+                    $('#dataSource').val('')
+                    $('#dataTime').val('')
+                    $('#now').val('')
+                    $('#newStreamModal').modal('hide');
+                }
+            })
+
+            /*socket.emit('update', {
+                stream: '546853c0f48b87e385ddf7fd',
+                value: 20,
+                time: '100000',
+                source: 'Me'
+            });*/
+            //post login to /login
+            //post register to /register
+            //post forgot to /forgot
+            
+            //Connect to websockets, give it a key and listen to a specific stream.
+            //Update that stream and get it back.
+
+
+/*            
+            $("#responsive_headline").text('70')
+            a = $("#responsive_headline")
+//            debugger;
+            a.textfill({
+                widthOnly: true, 
+                changeLineHeight: true,
+                success: function() {
+                    console.log("yay!")
+                },
+                fail: function() {
+                    alert("boo hoo!")
+                }
+            });*/
+        });
     </script>
 
-   
-  <script src="js/grayscale.js"></script>
 </body>
 
 </html>
