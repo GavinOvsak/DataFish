@@ -19,8 +19,8 @@
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="javascripts/sidr/stylesheets/jquery.sidr.light.scss">
 <!--    <script src="/js/jquery.fittext.js"></script>-->
-    <!--script src="/js/jquery.textfill.js"></script-->
-
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 </head>
 
 <body id="page-top" class="header" data-spy="scroll" data-target=".navbar-custom">
@@ -45,7 +45,7 @@
                         <a href="#newStreamModal" data-toggle="modal" data-target="#newStreamModal">New Stream</a>
                     </li>
                     <li id="new-datapoint">
-                        <a href="#">New Databubble</a>
+                        <a href="#newBubbleModal" data-toggle="modal" data-target="#newBubbleModal">New Databubble</a>
                     </li>
                     <li id="options" ng-app="userApp" ng-controller="UserCtrl" >
                         <a href="#">{{users.name}} <i class="fa fa-angle-down"></i></a>
@@ -61,7 +61,103 @@
         <!-- /.container -->
     </nav>
     
+    <div class="modal fade" id="newStreamModal" tabindex="-1" role="dialog" aria-labelledby="newStreamModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">New Stream</h4>
+                </div>
+                <div class="modal-body">
+                    <!--
+                        Name, Genre, Unit, Description, website, tags
+                    -->
+                    <div class="form-group">
+                        <label for="streamEmail">Stream Name:</label>
+                        <input type="text" class="form-control" id="streamEmail">
+                    </div>
+                    <div class="form-group">
+                        <label for="streamGenre">Stream Genre:</label>
+                        <select type="text" class="form-control" id="streamGenre">
+                            <option value="tv">TV</option>
+                            <option value="sports">Sports</option>
+                            <option value="politics">Politics</option>
+                            <option value="inequality">Inequality</option>
+                            <option value="health">Health</option>
+                            <option value="finance">Finance</option>
+                            <option value="environment">Environment</option>
+                            <option value="energy">Energy</option>
+                            <option value="education">Education</option>
+                            <option value="business">Business</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="streamUnit">Stream Unit:</label>
+                        <input type="text" class="form-control" id="streamUnit">
+                    </div>
+                    <div class="form-group">
+                        <label for="streamDescription">Stream Description:</label>
+                        <textarea class="form-control" rows="3" id="streamDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="streamWebsite">Stream Website:</label>
+                        <input type="text" class="form-control" id="streamWebsite">
+                    </div>
+                    <div class="form-group">
+                        <label for="streamTag">Stream Tags (comma separated):</label>
+                        <input type="text" class="form-control" id="streamTag">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createStream">Create New Stream</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="modal fade" id="newBubbleModal" tabindex="-1" role="dialog" aria-labelledby="newBubbleModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">New Data Bubble</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="dataStream">Stream:</label>
+                        <select type="text" class="form-control" id="dataStream">
+                            <option value="tv">Durham Weather</option>
+                            <option value="business">People with Ebola</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataValue">Data Value (Number):</label>
+                        <input type="text" class="form-control" id="dataValue">
+                    </div>
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataSource">Data Time:</label>
+                        <input type="checkbox" id="now" value="">Now</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataSource">Data Source (Where did you get this info?):</label>
+                        <input type="text" class="form-control" id="dataSource">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createStream">Create New Data Bubble</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="top" class="dash container">
         <!-- <script type="text/javascript">
@@ -102,24 +198,7 @@
                 </div>
             </div>
         </div>
-
-        <div id="newStreamModal" class="modal fade" tabindex="-2" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">Create New Data Stream</h3>
-            </div>
-            <div class="modal-body">
-                <p>To request a resume or get in touch, you can write me a message here. Alternatively, you can contact me through <a href="https://plus.google.com/108127518601412327477" target="_blank">Google+</a>, <a href="https://www.facebook.com/ramen.forever" target="_blank">Facebook</a>, or <a href="https://www.linkedin.com/profile/view?id=116646100" target="_blank">LinkedIn</a>. Hope to hear from you! Be sure to let me know how best to reach you.</p>
-                <textarea placeholder="Message" name="entry.437456649" rows= "8" cols= "0" class= "ss-q-long" id= "entry_437456649" dir= "auto" style= "resize:vertical;width:90%;"></textarea>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                <input class="btn btn-primary" aria-hidden="true" type= "submit" onclick="$('#newStreamModal').modal('hide')" name= "submit" value="Create" id= "ss-submit">
-            </div>
-        </div>
         
-
-
          <div class="row col-md-4 col-xs-4">
            <div class="flat-card">
                 <div class="topbar">
@@ -208,6 +287,10 @@
     <script src="js/bootstrap.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/grayscale.js"></script>
+    <script src="/js/jquery.textfill.js"></script>
+    <script src="/js/moment.js"></script>
+    <script src="/js/bootstrap-datetimepicker.js"></script>
+
 
     <!-- Include jQuery -->
 <!--    <script src="javascripts/jquery.js"></script>-->
@@ -247,6 +330,7 @@
             })
             socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
             
+            $('#datetimepicker1').datetimepicker();
             /*socket.emit('update', {
                 stream: '546853c0f48b87e385ddf7fd',
                 value: 20,

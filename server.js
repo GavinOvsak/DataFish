@@ -212,6 +212,8 @@ app.use('/font-awesome', express["static"](__dirname + '/font-awesome'));
 
 app.use('/js', express["static"](__dirname + '/js'));
 
+app.use('/fonts', express["static"](__dirname + '/fonts'));
+
 app.use('/css', express["static"](__dirname + '/css'));
 
 app.use('/static', express["static"](__dirname + '/public'));
@@ -313,32 +315,6 @@ app.get('/userPage', function(req, res) {
   return res.render('user.html');
 });
 
-app.get('/getToken', function(req, res) {
-  if ((req.query.email != null) && (req.query.password != null)) {
-    return User.findOne({
-      email: req.query.email
-    }, function(err, user) {
-      var newClient;
-      if (err != null) {
-        console.log(err);
-      }
-      if (user != null) {
-        newClient = new Client({
-          user_id: user._id
-        });
-        newClient.save();
-        return res.json({
-          key: newClient._id
-        });
-      } else {
-        return res.json('no user with that email');
-      }
-    });
-  } else {
-    return res.json('Need email and password');
-  }
-});
-
 publiclyViewableUser = function(user) {
   var publicUser;
   return publicUser = {
@@ -354,6 +330,33 @@ publiclyViewableUser = function(user) {
     editor: user.editor
   };
 };
+
+app.get('/getToken', function(req, res) {
+  if ((req.query.email != null) && (req.query.password != null)) {
+    return User.findOne({
+      email: req.query.email
+    }, function(err, user) {
+      var newClient;
+      if (err != null) {
+        console.log(err);
+      }
+      if (user != null) {
+        newClient = new Client({
+          user_id: user._id
+        });
+        newClient.save();
+        return res.json({
+          key: newClient._id,
+          user: publiclyViewableUser(user)
+        });
+      } else {
+        return res.json('no user with that email');
+      }
+    });
+  } else {
+    return res.json('Need email and password');
+  }
+});
 
 listeners = {};
 
@@ -596,6 +599,9 @@ app.post('/stream', function(req, res) {
           if (req.body.name != null) {
             stream.name = req.body.name;
           }
+          if (req.body.unit != null) {
+            stream.unit = req.body.unit;
+          }
           if (req.body.genre != null) {
             stream.genre = req.body.genre;
           }
@@ -621,6 +627,7 @@ app.post('/stream', function(req, res) {
     } else if (req.body.name != null) {
       newStream = new Stream({
         name: req.body.name,
+        unit: req.body.unit,
         genre: req.body.genre,
         description: req.body.description,
         tags: req.body.tags,

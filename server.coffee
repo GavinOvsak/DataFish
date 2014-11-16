@@ -173,6 +173,7 @@ app.use app.router
 app.use '/img', express.static __dirname + '/img'
 app.use '/font-awesome', express.static __dirname + '/font-awesome'
 app.use '/js', express.static(__dirname + '/js')
+app.use '/fonts', express.static(__dirname + '/fonts')
 app.use '/css', express.static(__dirname + '/css')
 app.use '/static', express.static(__dirname + '/public')
 
@@ -271,27 +272,6 @@ app.get('/userPage', (req, res) ->
   res.render('user.html')
 )
 
-app.get('/getToken', (req, res) ->
-  #Need to have the username and password
-  #Make new client
-  if req.query.email? and req.query.password?
-    User.findOne({email: req.query.email}, (err, user) ->
-      console.log(err) if err?
-      if user?# and bcrypt.compareSync(req.query.password, user.password)
-        newClient = new Client({
-          user_id: user._id
-        })
-        newClient.save()
-        res.json({key: newClient._id})
-      else
-        res.json('no user with that email')
-    )
-  else
-    res.json('Need email and password')
-)
-
-#/user?id=10987987&key=9769865
-
 publiclyViewableUser = (user) ->
   publicUser = {
     name: user.name,
@@ -305,6 +285,28 @@ publiclyViewableUser = (user) ->
     owner: user.owner,
     editor: user.editor
   }
+
+app.get('/getToken', (req, res) ->
+  #Need to have the username and password
+  #Make new client
+  if req.query.email? and req.query.password?
+    User.findOne({email: req.query.email}, (err, user) ->
+      console.log(err) if err?
+      if user?# and bcrypt.compareSync(req.query.password, user.password)
+        newClient = new Client({
+          user_id: user._id
+        })
+        newClient.save()
+        res.json({key: newClient._id, user: publiclyViewableUser(user)})
+      else
+        res.json('no user with that email')
+    )
+  else
+    res.json('Need email and password')
+)
+
+#/user?id=10987987&key=9769865
+
 
 listeners = {
 #  '<streamid>': [sockets]
@@ -483,6 +485,7 @@ app.post('/stream', (req, res) ->
         console.log(err) if err?
         if stream?
           stream.name = req.body.name if req.body.name?
+          stream.unit = req.body.unit if req.body.unit?
           stream.genre = req.body.genre if req.body.genre?
           stream.description = req.body.description if req.body.description?
           stream.website = req.body.website if req.body.website?
@@ -495,6 +498,7 @@ app.post('/stream', (req, res) ->
     else if req.body.name?
       newStream = new Stream({
         name: req.body.name,
+        unit: req.body.unit,
         genre: req.body.genre,
         description: req.body.description,
         tags: req.body.tags,
