@@ -69,6 +69,7 @@ Stream_Schema = mongoose.Schema({
   website: String,
   picture: String,
   average: Number,
+  latestValue: Number,
   subscriptions: Array #list of users to notify on update event
 });
 
@@ -84,7 +85,8 @@ Point_Schema = mongoose.Schema({
 });
 
 Point = mongoose.model('Point', Point_Schema)
-#Point.remove({},->)
+#Stream.remove({}, ->)
+#Point.remove({}, ->)
 
 #User.remove({email: 'test'}, ->)
 if false
@@ -372,7 +374,6 @@ io.sockets.on 'connection', (socket) ->
           if listeners[stream._id]?.length?
             for listener in listeners[stream._id]
               listener.emit('newData', newPoint)
-
       )
       
 app.get('/user', (req, res) ->
@@ -522,7 +523,8 @@ app.post('/stream', (req, res) ->
         description: req.body.description,
         tags: req.body.tags,
         website: req.body.website,
-        picture: req.body.picture
+        picture: req.body.picture,
+        latestValue: 0
       })
       newStream.save()
       req.user.owner.push(newStream._id)
@@ -571,6 +573,8 @@ app.post('/point', (req, res) ->
           source: req.body.source,
           creator: req.user._id
         })
+        stream.latestValue = req.body.value
+        stream.save()
         newPoint.save()
         if listeners[stream._id]?.length?
             for listener in listeners[stream._id]

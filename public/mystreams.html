@@ -146,8 +146,7 @@
                     <div class="form-group">
                         <label for="dataStream">Stream:</label>
                         <select type="text" class="form-control" id="dataStream">
-                            <option ng-repeat="stream in streams" value="546846819f10b2dc7e04a224">Durham Weather</option>
-                            <option value="546853c0f48b87e385ddf7fd">People with Ebola</option>
+                            <option ng-repeat="obj in ownerObjs" value="{{obj._id}}">{{obj.name}}</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -258,10 +257,11 @@
             $scope.following.push($scope.users.owner[j]);
           }*/
 
-          $scope.ownerObj = []
+          $scope.ownerObjs = []
+          
           for (i = 0; i < $scope.owner.length; i++) {
             $http.get('/stream?id=' + $scope.owner[i]).success((function(i){return function(data) {
-                $scope.ownerObj.push(data);
+                $scope.ownerObjs.push(data);
             }; })(i))
           }
 
