@@ -122,8 +122,9 @@
                                     results = regex.exec(location.search);
                                 return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
                             }
+                        
 
-                            debugger;
+                            
                             console.log(getParameterByName('id'))
                             var description = getParameterByName('description')
                             var picture = getParameterByName('picture')
@@ -141,62 +142,85 @@
                             console.log("Name is " + test.name)
 
                             /*
+                            $.each(test.points, function (index, point) {
+                                $('#myElement').data('key',jsonObject);
+                            }  */
+                            //$('#myElement').data('key',jsonObject);
+                            $('#name').text(test.name);
+                            $('#genre').text(test.genre);
+                            $('#tags').text(test.tags);
+                            $('#descriptions').text(test.description);
+                            $('#source').text(test.source);                            
+                            $('#data').text(test.points);
+                            console.log(test.points);
+
+                             //bindto: '#chart',
+
+                            
+                             var values = [];
+                             var times = [];
+                             $.each(test.points, function(index, point) {
+                                values.push(point.value);
+                                times.push(point.time);
+                             });
+                             console.log(values)
+                             console.log(times)
+                             if (values.length >0) {
+                                values.splice(0,2);
+                                times.splice(0,2);
+                             }
+                             console.log(values)
+                             console.log(times)
+
+                            var chart = c3.generate({
+                                data: {
+                                    xs: {
+                                        'data1': 'x1'
+                                    },
+                                    columns: [
+                                        ['x1', times],
+                                        ['data1', values],
+                                    ]
+                                }
+                            });
+                    
+                        
+                            /*
                             $.get('http://datafish.nodejitsu.com/stream?id=' + getParameterByName('id'), function(data) {
                                 console.log(data);
 
                             })
                             */
+                        });
                             </script>
                             
 
     <div id="top" class="dash container">
-       <h1>Flow Title</h1>
+       <h1 id="name"></h1>
        <div class="stream">
             <div class="stream-info">
                 <div class="row">
-                <div class="col-md-4">Category:</div>
-                <div class="col-md-8">Tags:</div>
+                <div id="genre" class="col-md-4 "></div>
+                <div id="tags" class="col-md-8">Tags:</div>
                 </div>
                 <div class="row col-md-offset-1 col-md-3 card-genre">icon</div>
-                <div class="row col-md-5 description">
+                <div id="description" class="row col-md-5 description">
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 </div>
                 <div class="row col-md-offset-1 col-md-2 card-follow">Follow</div>
             </div>
             <div class="stream-graph">
             <div class="row">
-                <div class="col-md-1">test 1</div>
             </div>
-
-                <div class="row col-md-4 card-unit">Friendship and things</div>
+                <div class="row col-md-4 card-unit"></div>
                 <div class="row col-md-8 card-value">
                     <div id="chart"></div>
                     <!-- Load c3.css -->
-                    <script type="text/javascript">
-
-                            var chart = c3.generate({
-                                //bindto: '#chart',
-
-                                data: {
-                                    x: 'x',
-                                    columns: [
-                                        ['x', 30, 50, 100, 230, 300, 310],
-                                        ['data1', 30, 200, 100, 400, 150, 250],
-                                        ['data2', 130, 300, 200, 300, 250, 450]
-                                    ]/*
-                                  columns: [
-                                    ['data1', 30, 200, 100, 400, 150, 250],
-                                    ['data2', 50, 20, 10, 40, 15, 25]
-                                  ]*/
-                                }
-                            });
-                        });
-                    </script>
 
 
 
 
-                EPIC GRAPH</div>
+                </div>
             </div>
             <div class="stream-footer">
                 <div class="col-md-offset-1 row col-md-5 card-date">11-16-14</div>
