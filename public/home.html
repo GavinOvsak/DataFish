@@ -122,7 +122,7 @@
                 email: $('#logEmail').val(),
                 password: $('#logPassword').val()
             }, function(data) {
-                window.location = '/dashboard'
+                window.location = '/explore'
             }).fail(function() {
                 alert( "Incorrect Log In Information" );
             });
@@ -134,7 +134,7 @@
                 email: $('#regEmail').val(),
                 password: $('#regPassword').val()
             }, function(data) {
-                window.location = '/dashboard'
+                window.location = '/explore'
             }).fail(function() {
                 alert( "Account exists for that email" );
             });

@@ -36,18 +36,14 @@
     <script src="js/bootstrap.js"></script>
     <!-- Custom JavaScript for the Side Menu and Smooth Scrolling -->
 
-
-
     <script src="js/grayscale.js"></script>
-
     <!-- Include jQuery -->
     <script src="javascripts/jquery.js"></script>
     <!-- Include the Sidr JS -->
     <script src="javascripts/sidr/jquery.sidr.js"></script>
-
 </head>
 
-<body id="page-top" class="header" data-spy="scroll" data-target=".navbar-custom">
+<body ng-app="userApp" ng-controller="UserCtrl" id="page-top" class="header" data-spy="scroll" data-target=".navbar-custom">
 
 <div id="fb-root"></div>
 <!--
@@ -114,6 +110,148 @@
         <!-- /.container -->
     </nav>
 
+
+
+    <div id="top" class="dash container">
+       <div class="stream">
+
+            <div class="stream-info">
+                
+
+                <div class="row col-md-2 col-xs-2 card-genre">
+                      <a href="#about">
+                          <img align="left" src="/img/Health.png"> <!-- Edit this for specific genre -->
+                      </a>
+                      
+                  </div>
+                  <div class="row col-md-offset-1 col-md-7 col-xs-offset-1 col-xs-7 card-title">
+                      <h1 id="name"></h1>
+                      <!--a ng-href="/streamPage?id={{stream}}"></a--> <!-- Edit this for specific title -->
+                  </div>
+                  <div class=" col-md-1 col-xs-offset-1 col-xs-1  col-xs-offset-1 card-follow">
+                      <a href="#about">
+                          <img align="right" src="img/PlusSign.png"> <!-- Edit this if not a plus sign -->
+                      </a>
+                      
+                  </div>
+
+
+                <!--div class="row col-md-offset-1 col-md-3 card-genre">icon</div>
+                <div id="description" class="row col-md-5 description"></div>
+                <div class="row col-md-offset-1 col-md-2 card-follow">Follow</div-->
+            </div>
+
+            <div class="stream-graph">
+            <div class="row">
+            </div>
+                <div class="row col-md-4 card-unit"></div>
+                <div class="row col-md-8 card-value">
+                    <div id="chart"></div>
+                    <!-- Load c3.css -->
+
+
+                </div>
+            </div>
+            <div class="stream-footer">
+                <div class="col-md-offset-1 row col-md-5 card-date">11-16-14</div>
+                <div class="col-md-offset-1 row col-md-5 card-star">Favorite</div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+    <script>
+      var app = angular.module('userApp', []);
+      
+      app.controller('UserCtrl', function($scope, $http){
+        
+        $http.get('/user').success(function(data) {
+          $scope.users = data;
+          console.log($scope.users);
+          
+          $scope.owner = $scope.users.owner;
+
+          /*for (var j = 0; j < $scope.users.owner.length; j ++) {
+            $scope.following.push($scope.users.owner[j]);
+          }*/
+
+
+          console.log($scope.owner)
+          $scope.ownerObjs = [];
+          
+          for (i = 0; i < $scope.owner.length; i++) {
+            $http.get('/stream?id=' + $scope.owner[i]).success((function(i){return function(data) {
+                if (data != '') {
+                    $scope.ownerObjs.push(data);
+                      console.log('Owner Objs:')
+                      console.log($scope.owner[i])
+                      console.log(data)
+                      console.log($scope.ownerObjs)
+//                      console.log(data.latestValue)
+                  }
+            }; })(i))
+          }
+
+            $http.get('/hack/allStreams').success(function(data) {
+                $scope.all = data;
+                console.log($scope.all);
+                for (i = 0; i < $scope.all.length; i++) {
+                    console.log($scope.all[i]);
+                    //(function(i){return function(data) {}; })(i)
+                    
+                    $scope.bubbles = {};
+                    $http.get('/stream?id=' + $scope.all[i]._id).success((function(i){return function(data) {
+                        var streamid = $scope.all[i]._id;
+                        console.log(data)
+                        $scope.bubbles[streamid] = data;
+                        latest = 0;
+                        if (data.latestValue != null) {
+                            latest = data.latestValue;
+                        }
+                        $scope.bubbles[streamid].recent = latest;
+                        console.log(data.latestValue);
+
+                        if ($scope.bubbles[streamid].genre == 'health') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Health.png";
+                        
+                        } else if ($scope.bubbles[streamid].genre == 'finance') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'environment') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'politics') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'sports') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'tv') {
+                            $scope.bubbles[streamid].genreSrc = "/img/TV.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'energy') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'education') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Education.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'business') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Business.png";
+                            
+                        } else if ($scope.bubbles[streamid].genre == 'inequality') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
+                           
+                        }
+
+                   }; })(i));
+                }
+            });
+          console.log($scope.bubbles)
+        });
+      });
+    </script>
      <script>
                         $(document).ready(function(){
                             function getParameterByName(name) {
@@ -122,8 +260,9 @@
                                     results = regex.exec(location.search);
                                 return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
                             }
+                        
 
-                            debugger;
+                            
                             console.log(getParameterByName('id'))
                             var description = getParameterByName('description')
                             var picture = getParameterByName('picture')
@@ -141,71 +280,63 @@
                             console.log("Name is " + test.name)
 
                             /*
-                            $.get('http://datafish.nodejitsu.com/stream?id=' + getParameterByName('id'), function(data) {
+                            $.each(test.points, function (index, point) {
+                                $('#myElement').data('key',jsonObject);
+                            }  */
+                            //$('#myElement').data('key',jsonObject);
+                            $('#name').text(test.name);
+                            $('#genre').text(test.genre);
+                            $('#tags').text(test.tags);
+                            $('#description').text(test.description);
+                            $('#source').text(test.source);                            
+                            $('#data').text(test.points);
+                            console.log(test.points);
+
+                             //bindto: '#chart',
+
+                            
+                             var values = [];
+                             var times = [];
+                             $.each(test.points, function(index, point) {
+                                values.push(point.value);
+                                times.push(point.time);
+                             });
+                             console.log(values)
+                             console.log(times)
+                             if (values.length >0) {
+                                values.splice(0,2);
+                                times.splice(0,2);
+                             }
+                             console.log(values)
+                             console.log(times)
+
+                            var chart = c3.generate({
+                                data: {
+        xs: {
+            'Ebola Cases': 'month',
+        },
+        columns: [
+            ['month', 6, 7, 8, 9, 10, 11],
+            //['x2', 30, 50, 75, 100, 120],
+            ['Ebola Cases', 0, 0, 2, 4, 1, 0],
+            //['data2', 20, 180, 240, 100, 190]
+        ]
+    }
+                                
+                            });
+                    
+                        
+                            
+                            var test = $.get('http://datafish.nodejitsu.com/stream?id=' + getParameterByName('id'), function(data) {
                                 console.log(data);
 
                             })
-                            */
+
+                            console.log(test)
+                            
+                        });
                             </script>
                             
-
-    <div id="top" class="dash container">
-       <h1>Flow Title</h1>
-       <div class="stream">
-
-            <div class="stream-info">
-                <div class="col-md-4">Category:</div>
-                <div class="col-md-8">Tags:</div>
-                </div>
-                <div class="row col-md-offset-1 col-md-3 card-genre">icon</div>
-                <div class="row col-md-5 description">
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                </div>
-                <div class="row col-md-offset-1 col-md-2 card-follow">Follow</div>
-            </div>
-
-            <div class="stream-graph">
-            <div class="row">
-                <div class="col-md-1">test 1</div>
-            </div>
-
-                <div class="row col-md-4 card-unit">Friendship and things</div>
-                <div class="row col-md-8 card-value">
-                    <div id="chart"></div>
-                    <!-- Load c3.css -->
-                    <script type="text/javascript">
-
-                            var chart = c3.generate({
-                                //bindto: '#chart',
-
-                                data: {
-                                    x: 'x',
-                                    columns: [
-                                        ['x', 30, 50, 100, 230, 300, 310],
-                                        ['data1', 30, 200, 100, 400, 150, 250],
-                                        ['data2', 130, 300, 200, 300, 250, 450]
-                                    ]/*
-                                  columns: [
-                                    ['data1', 30, 200, 100, 400, 150, 250],
-                                    ['data2', 50, 20, 10, 40, 15, 25]
-                                  ]*/
-                                }
-                            });
-                        });
-                    </script>
-
-
-
-
-                EPIC GRAPH</div>
-            </div>
-            <div class="stream-footer">
-                <div class="col-md-offset-1 row col-md-5 card-date">11-16-14</div>
-                <div class="col-md-offset-1 row col-md-5 card-star">Favorite</div>
-            </div>
-        </div>
-    </div>
-
 
    
     
