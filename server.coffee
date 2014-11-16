@@ -75,7 +75,7 @@ Stream_Schema = mongoose.Schema({
 Stream = mongoose.model('Stream', Stream_Schema)
 
 Point_Schema = mongoose.Schema({
-  name: Number,
+  value: Number,
   source: String,
   stream_id: String,
   time: String, #date
@@ -333,9 +333,27 @@ io.sockets.on 'connection', (socket) ->
     #find out which clients to tell
     #console.log(['update', data])
 
+    console.log('updated')
     #Tell all clients about the new data for their stream.
-    socket.emit('newData', {'hey': 'world'})
+    
+    if data.stream? and data.value? and data.time? and data.source? #and req.user?
+      Stream.findOne({_id: data.stream}, (err, stream) ->
+        if stream?
+          console.log(data)
+          newPoint = new Point({
+            value: data.value,
+            time: data.time,
+            stream_id: stream._id,
+            source: data.source
+            #creator: req.user._id
+          })
+          newPoint.save()
+          if listeners[stream._id]?.length?
+            for listener in listeners[stream._id]
+              listener.emit('newData', newPoint)
 
+      )
+      
 app.get('/user', (req, res) ->
 #if req.query.id != null
 #  req.query.id
@@ -412,9 +430,16 @@ app.post('/user', (req, res) ->
 
     #if req.body.password?, encrypt
 
-    req.user.following = req.body.following if req.body.following?
-    req.user.favorites = req.body.favorites if req.body.favorites?
-    req.user.editor = req.body.editor if req.body.editor?
+    console.log(req.body)
+    
+    req.user.following.push(req.body.follow) if req.body.follow?
+    req.user.following.splice(req.user.following.indexOf(req.body.unfollow),1) if req.body.unfollow? and req.user.following.indexOf(req.body.unfollow) >= 0
+
+    req.user.favorites.push(req.body.favorite) if req.body.favorite?
+    req.user.favorites.splice(req.user.favorites.indexOf(req.body.unfavorite),1) if req.body.unfavorite? and req.user.favorites.indexOf(req.body.unfavorite) >= 0
+
+    req.user.editor.push(req.body.edit) if req.body.edit?
+    req.user.editor.splice(req.user.editor.indexOf(req.body.unedit),1) if req.body.unedit? and req.user.editor.indexOf(req.body.unedit) >= 0
 
     req.user.save()
     res.json(publiclyViewableUser(req.user))
@@ -477,6 +502,8 @@ app.post('/stream', (req, res) ->
         picture: req.body.picture
       })
       newStream.save()
+      req.user.owner.push(newStream._id)
+      req.user.save()
       res.json(newStream)
     else
       res.json()
@@ -522,6 +549,9 @@ app.post('/point', (req, res) ->
           creator: req.user._id
         })
         newPoint.save()
+        if listeners[stream._id]?.length?
+            for listener in listeners[stream._id]
+              listener.emit('newData', newPoint)
         res.json(newPoint)
         #Make point and say it is for the stream
       else

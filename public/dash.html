@@ -204,13 +204,12 @@
         socket.on('newData', function(data) {
             console.log(data);
         })
-        socket.emit('listen', {streams: ['546800481c9771e048ae1826']});
+        socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
         socket.emit('update', {
-            key: '5467fae1b1ba4ec34659b8b3', 
-            point: {
-                stream: '546800481c9771e048ae1826',
-                value: 20
-            }
+            stream: '546853c0f48b87e385ddf7fd',
+            value: 20,
+            time: '100000',
+            source: 'Me'
         });
         //post login to /login
         //post register to /register
