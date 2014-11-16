@@ -15,7 +15,7 @@
     <!-- Add custom CSS here -->
     <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
     <link href="/css/stylish-portfolio.css" rel="stylesheet">
-    <!--link href="css/flat-ui.css" rel="stylesheet"-->
+    <link href="css/flat-ui.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="javascripts/sidr/stylesheets/jquery.sidr.light.scss">
 <!--    <script src="/js/jquery.fittext.js"></script>-->
@@ -41,6 +41,19 @@
                     <li class="hidden">
                         <a href="#page-top"></a>
                     </li>
+
+                    <li>
+                        Search: <input ng-model="query" type="text">
+                    </li>
+                    <!--li id="search" class="search">
+                        
+
+                           <input ng-model="query" id="logEmail" type="text" placeholder="Search" />
+                           <span class="input-group-btn">
+                                <button type="submit" class="btn"><span class="fui-search"></span></button>
+                            </span>    
+                        
+                    </li--> <!--Search: (outside brackets) input ng-model="query" type="text"/-->
                     <li id="new-stream">
                         <a href="#newStreamModal" data-toggle="modal" data-target="#newStreamModal">New Stream</a>
                     </li>
