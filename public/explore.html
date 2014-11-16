@@ -203,10 +203,10 @@
                     </div>
                     <div class="midbar">
                         <div class="row col-md-8 card-value">{{bubbles[stream._id].recent}}</div> <!-- Edit this for value -->
-                        <div class="row col-md-4 card-unit">People</div> <!-- Edit this for currency{{bubbles[stream._id].recent.time}} -->
+                        <div class="row col-md-4 card-unit">People</div> <!-- Edit this for currency -->
                     </div>
                     <div class="bottombar">
-                        <div class="col-md-offset-1 row col-md-5 card-date"></div>
+                        <div class="col-md-offset-1 row col-md-5 card-date">{{bubbles[stream._id].recent.time}}</div>
                     </div>
                 </div>
             </div>
@@ -255,11 +255,19 @@
           }*/
 
 
-          $scope.ownerObjs = []
+          console.log($scope.owner)
+          $scope.ownerObjs = [];
           
           for (i = 0; i < $scope.owner.length; i++) {
             $http.get('/stream?id=' + $scope.owner[i]).success((function(i){return function(data) {
-                $scope.ownerObjs.push(data);
+                if (data != '') {
+                    $scope.ownerObjs.push(data);
+                      console.log('Owner Objs:')
+                      console.log($scope.owner[i])
+                      console.log(data)
+                      console.log($scope.ownerObjs)
+//                      console.log(data.latestValue)
+                  }
             }; })(i))
           }
 
