@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Datafish</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Add custom CSS here -->
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
+    <link href="css/stylish-portfolio.css" rel="stylesheet">
+    <!--link href="css/flat-ui.css" rel="stylesheet"-->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-custom">
+      <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <a href="/dashboard"><img src="img/logo.png"></a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                <ul class="nav navbar-nav">
+                    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <video autoplay loop poster="img/fish.jpg" id="bgvid">
+        <!--source src="polina.webm" type="video/webm"-->
+        <source src="img/FishyVideo.mp4" type="video/mp4">
+    </video>
+
+    <!-- Full Page Image Header Area -->
+    <div id="top" class="header-front container">
+        <!-- Split in half for logo and login -->
+        <div class="vert-text row col-md-6 col-xs-12">
+            <!--h1>Datafish</h1-->
+            <img src="img/datafish.png">
+        </div>
+        <div class="vert-text row col-md-6 col-xs-12">
+            <h3>Start <strong><em>swimming</em></strong></h3>
+             <!-- login page -->
+            <div class="flat-form">
+                <ul class="tabs">
+                    <li>
+                        <a href="#login" class="active">Login</a>
+                    </li>
+                    <li>
+                        <a href="#register">Register</a>
+                    </li>
+                    <li>
+                        <a href="#reset">Reset Password</a>
+                    </li>
+                </ul>
+                <div id="login" class="form-action show">
+                    <form action="javascript:myFunction(); return false;">
+
+                        <input id="logEmail" type="text" placeholder="Email" />
+                        <input id="logPassword" type="password" placeholder="Password" />
+                        <input id="logSubmit" type="submit" value="Submit" class="button" />
+                          
+                    </form>
+                </div>
+                <!--/#login.form-action-->
+                <div id="register" class="form-action hide">
+                    <form action="javascript:myFunction(); return false;">
+                        <input id="regName" type="text" placeholder="Name" />
+                        <input id="regEmail" type="text" placeholder="Email" />
+                        <input id="regPassword" type="password" placeholder="Password" />
+                        <input id="regSubmit" type="submit" value="Sign Up" class="button" />
+                    </form>
+                </div>
+                <!--/#register.form-action-->
+                <div id="reset" class="form-action hide">
+                    <form action="javascript:myFunction(); return false;">
+                        <input id="resetEmail" type="text" placeholder="Email" />
+                        <input id="resetSubmit" type="submit" value="Send" class="button" />
+                    </form>
+                </div>
+                <!--/#register.form-action-->
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script class="cssdeck" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script src="js/jquery-1.10.2.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect();
+        socket.on('newData', function(data) {
+            console.log(data);
+        })
+        /*socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
+        socket.emit('update', {
+            stream: '546853c0f48b87e385ddf7fd',
+            value: 20,
+            time: '100000',
+            source: 'Me'
+        });
+*/
+    </script>
+    <script>
+    (function( $ ) {
+
+        $('#logSubmit').click(function() {
+            $.post('/login', {
+                email: $('#logEmail').val(),
+                password: $('#logPassword').val()
+            }, function(data) {
+                window.location = '/dashboard'
+            }).fail(function() {
+                alert( "Incorrect Log In Information" );
+            });
+        });
+
+        $('#regSubmit').click(function() {
+            $.post('/register', {
+                name: $('#regName').val(),
+                email: $('#regEmail').val(),
+                password: $('#regPassword').val()
+            }, function(data) {
+                window.location = '/dashboard'
+            }).fail(function() {
+                alert( "Account exists for that email" );
+            });
+        });
+
+      // constants
+      var SHOW_CLASS = 'show',
+          HIDE_CLASS = 'hide',
+          ACTIVE_CLASS = 'active';
+      
+      $( '.tabs li a').click(function(e){
+        e.preventDefault();
+        var $tab = $( this ),
+             href = $tab.attr( 'href' );
+        
+         $( '.active' ).removeClass( ACTIVE_CLASS );
+         $tab.addClass( ACTIVE_CLASS );
+      
+         $( '.show' )
+            .removeClass( SHOW_CLASS )
+            .addClass( HIDE_CLASS )
+            .hide();
+        
+          $(href)
+            .removeClass( HIDE_CLASS )
+            .addClass( SHOW_CLASS )
+            .hide()
+            .fadeIn( 550 );
+      });
+    })( jQuery );
+
+    $("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    </script>
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    </script>
+
+   
+  <script src="js/grayscale.js"></script>
+</body>
+
+</html>

@@ -303,6 +303,15 @@ app.get('/mystreams', function(req, res) {
   }
 });
 
+app.get('/explore', function(req, res) {
+  if (req.user != null) {
+    return res.render('explore.html');
+  } else {
+    console.log('not logged in');
+    return res.redirect('/');
+  }
+});
+
 app.get('/account', function(req, res) {
   if (req.user != null) {
     return res.render('account.html');

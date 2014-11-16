@@ -260,6 +260,15 @@ app.get('/mystreams', (req, res) ->
     res.redirect('/')
 )
 
+app.get('/explore', (req, res) ->
+  #Verify logged in, or redirect to home
+  if req.user?
+    res.render('explore.html')
+  else
+    console.log('not logged in')
+    res.redirect('/')
+)
+
 app.get('/account', (req, res) ->
   #Verify logged in, or redirect to home
   if req.user?
