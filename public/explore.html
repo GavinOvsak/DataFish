@@ -181,18 +181,18 @@
             </script>-->
            <!--h1>Stream</h1-->
            <div class="placeholder"></div>
-           <div ng-repeat="stream in following" class="row col-md-4 col-xs-4">
+           <div ng-repeat="stream in all" class="row col-md-4 col-xs-4">
                <div class="flat-card">
                     <div class="topbar">
 
                         <div class="row col-md-2 col-xs-2 card-genre">
                             <a href="#about">
-                                <img align="left" src="{{bubbles[stream].genreSrc}}"> <!-- Edit this for specific genre -->
+                                <img align="left" src="{{bubbles[stream._id].genreSrc}}"> <!-- Edit this for specific genre -->
                             </a>
                             
                         </div>
                         <div class="row col-md-offset-1 col-md-7 col-xs-offset-1 col-xs-7 card-title">
-                            <a ng-href="/streamPage?id={{stream}}">{{bubbles[stream].name}}</a> <!-- Edit this for specific title -->
+                            <a ng-href="/streamPage?id={{stream._id}}">{{bubbles[stream._id].name}}</a> <!-- Edit this for specific title -->
                         </div>
                         <div class=" col-md-1 col-xs-offset-1 col-xs-1  col-xs-offset-1 card-follow">
                             <a href="#about">
@@ -202,11 +202,11 @@
                         </div>
                     </div>
                     <div class="midbar">
-                        <div class="row col-md-8 card-value">{{bubbles[stream].recent.value}}</div> <!-- Edit this for value -->
+                        <div class="row col-md-8 card-value">{{bubbles[stream._id].recent.value}}</div> <!-- Edit this for value -->
                         <div class="row col-md-4 card-unit">People</div> <!-- Edit this for currency -->
                     </div>
                     <div class="bottombar">
-                        <div class="col-md-offset-1 row col-md-5 card-date">{{bubbles[stream].recent.time}}</div>
+                        <div class="col-md-offset-1 row col-md-5 card-date">{{bubbles[stream._id].recent.time}}</div>
                     </div>
                 </div>
             </div>
@@ -245,6 +245,7 @@
       app.controller('UserCtrl', function($scope, $http){
         
         $http.get('/user').success(function(data) {
+          $scope.users = data;
           console.log($scope.users);
           
           $scope.owner = $scope.users.owner;
@@ -270,8 +271,8 @@
                     //(function(i){return function(data) {}; })(i)
                     
                     $scope.bubbles = {};
-                    $http.get('/stream?id=' + $scope.all[i]).success((function(i){return function(data) {
-                        var streamid = $scope.all[i];
+                    $http.get('/stream?id=' + $scope.all[i]._id).success((function(i){return function(data) {
+                        var streamid = $scope.all[i]._id;
                         $scope.bubbles[streamid] = data;
                         $scope.bubbles[streamid].recent = data.points[data.points.length-1];
                         console.log(data.points[data.points.length-1]);
@@ -308,14 +309,10 @@
                            
                         }
 
-                }; })(i))
+                   }; })(i));
+                }
             });
-
-           
-
-          }
           console.log($scope.bubbles)
-
         });
       });
     </script>
