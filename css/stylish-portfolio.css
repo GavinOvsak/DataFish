@@ -159,7 +159,14 @@ video#bgvid {
 
 /* Dash */
 .dash {
-  margin-top: 20%;
+  margin-top: 10%;
+  text-align: center;
+
+}
+
+.dash h1 {
+  font-size: 50px;
+  font-family: 'Ubuntu',light;
 }
 
 /* Title */
@@ -501,10 +508,7 @@ video#bgvid {
   background: #6A94D4;
 }
 
-/* Dash */
-.dash {
-  margin-top: 20%;
-}
+
 
 /* Title */
 
@@ -728,13 +732,15 @@ i.scroll:hover {
 
 .navbar li a {
     font-size: 16px;
-    color: white;
+  
+    color: #CDF76F;
+    /*background-color: #6A94D4;*/
     display: block;
     line-height: 60px;
     padding: 0 26px;
     text-decoration: none;
-    border-left: 1px solid #2e2e2e;
-    font-family: Montserrat, sans-serif;
+    
+    font-family: 'Ubuntu',light;
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 .navbar li a:hover {
@@ -757,17 +763,21 @@ i.scroll:hover {
     position: absolute;
     top: 110%;
     right: 0;
-    width: 200px;
+    width:auto;
+    /*width: 200px;*/
     height: auto;
     opacity: 0;
     transition: all 0.1s;
-    background: #232323;
+    
+    float:none;
 }
 .subnav li {
     float: none;
+    border-bottom: 1px solid #CDF76F;
+    border: 1px solid #CDF76F;
 }
 .subnav li a {
-    border-bottom: 1px solid #2e2e2e;
+    border-bottom: 1px solid #CDF76F;
 }
 #options:hover .subnav {
     visibility: visible;
