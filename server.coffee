@@ -70,6 +70,7 @@ Stream_Schema = mongoose.Schema({
   picture: String,
   average: Number,
   latestValue: Number,
+  latestTime: String,
   subscriptions: Array #list of users to notify on update event
 });
 
@@ -485,6 +486,8 @@ app.get('/stream', (req, res) ->
             genre: stream.genre,
             tags: stream.tags,
             _id: stream._id,
+            latestValue: stream.latestValue,
+            latestTime: stream.latestTime,
             points: points
           }
           res.json(result)
@@ -524,7 +527,8 @@ app.post('/stream', (req, res) ->
         tags: req.body.tags,
         website: req.body.website,
         picture: req.body.picture,
-        latestValue: 0
+        latestValue: 0,
+        latestTime: Date.now()
       })
       newStream.save()
       req.user.owner.push(newStream._id)
@@ -574,6 +578,7 @@ app.post('/point', (req, res) ->
           creator: req.user._id
         })
         stream.latestValue = req.body.value
+        stream.latestTime = req.body.time
         stream.save()
         newPoint.save()
         if listeners[stream._id]?.length?

@@ -244,7 +244,7 @@
       
       app.controller('UserCtrl', function($scope, $http){
         
-        $http.get('/user?id=54681fb90d0903a9637f25f7').success(function(data) {
+        $http.get('/user').success(function(data) {
           $scope.users = data;
           
           console.log($scope.users);
@@ -274,7 +274,6 @@
                 var streamid = $scope.following[i];
                 $scope.bubbles[streamid] = data;
                 $scope.bubbles[streamid].recent = data.latestValue;
-                console.log(data.points[data.points.length-1]);
 
 
                 if ($scope.bubbles[streamid].genre == 'health') {

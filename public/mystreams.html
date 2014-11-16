@@ -280,7 +280,7 @@
                 console.log('bubbles update');
                 console.log(streamid);
                 console.log($scope.bubbles[streamid]);
-                $scope.bubbles[streamid].recent = data.points[data.points.length-1];
+                $scope.bubbles[streamid].recent = data.latestValue;
                 console.log($scope.bubbles[streamid].recent);
 
 
