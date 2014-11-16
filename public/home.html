@@ -66,7 +66,7 @@
                     </li>
                 </ul>
                 <div id="login" class="form-action show">
-                    <form>
+                    <form action="javascript:myFunction(); return false;">
 
                                 <input id="logEmail" type="text" placeholder="Email" />
                                 <input id="logPassword" type="password" placeholder="Password" />
@@ -76,7 +76,7 @@
                 </div>
                 <!--/#login.form-action-->
                 <div id="register" class="form-action hide">
-                    <form>
+                    <form action="javascript:myFunction(); return false;">
                                 <input id="regName" type="text" placeholder="Name" />
                                 <input id="regEmail" type="text" placeholder="Email" />
                                 <input id="regPassword" type="password" placeholder="Password" />
@@ -85,7 +85,7 @@
                 </div>
                 <!--/#register.form-action-->
                 <div id="reset" class="form-action hide">
-                    <form>
+                    <form action="javascript:myFunction(); return false;">
                                 <input id="resetEmail" type="text" placeholder="Email" />
                                 <input id="resetSubmit" type="submit" value="Send" class="button" />
                     </form>
@@ -107,9 +107,9 @@
                 email: $('#logEmail').val(),
                 password: $('#logPassword').val()
             }, function(data) {
-                console.log('Results')
-                console.log(arguments)
-                //window.location = '/dashboard'
+                window.location = '/dashboard'
+            }).fail(function() {
+                alert( "Incorrect Log In Information" );
             });
         });
 
@@ -119,12 +119,11 @@
                 email: $('#regEmail').val(),
                 password: $('#regPassword').val()
             }, function(data) {
-                console.log(data)
-                //window.location = '/dashboard'
+                window.location = '/dashboard'
+            }).fail(function() {
+                alert( "Account exists for that email" );
             });
         });
-
-
 
       // constants
       var SHOW_CLASS = 'show',
@@ -132,7 +131,6 @@
           ACTIVE_CLASS = 'active';
       
       $( '.tabs li a').click(function(e){
-        console.log('HEY')
         e.preventDefault();
         var $tab = $( this ),
              href = $tab.attr( 'href' );

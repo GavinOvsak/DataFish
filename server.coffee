@@ -82,7 +82,7 @@ Point_Schema = mongoose.Schema({
 
 Point = mongoose.model('Point', Point_Schema)
 
-
+#User.remove({email: 'test'}, ->)
 if false
   User.remove({}, ->)
   newUser = new User({
@@ -147,7 +147,7 @@ passport.use new LocalStrategy { usernameField: 'email', passwordField: 'passwor
       (err, person) ->
         console.log(person)
         done err if err?
-        if bcrypt.compareSync(password, person.password)
+        if person? and bcrypt.compareSync(password, person.password)
           done(null, person)
         else
           done(null)
@@ -212,6 +212,8 @@ app.post('/register', (req, res) ->
         req.login(newUser, ->
           res.json(newUser)
           )
+        console.log('New member, redirecting')
+        res.redirect('/dashboard')
       else
         res.json('Already exists')
     )
@@ -229,17 +231,19 @@ app.get('/bypasshome', (req, res) ->
 
 app.get('/', (req, res) ->
 #  console.log(req.user)
+  #res.sendfile(__dirname + '/public/home.ejs')
   if req.user?
     res.redirect('/dashboard')
   else
-    res.render('home')
+    res.render('home.html')
 )
 
 app.get('/dashboard', (req, res) ->
   #Verify logged in, or redirect to home
   if req.user?
-    res.render('dash')
+    res.render('dash.html')
   else
+    console.log('not logged in')
     res.redirect('/')
 )
 
