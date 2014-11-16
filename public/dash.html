@@ -31,7 +31,7 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
                     <i class="fa fa-bars"></i>
                 </button>
-                <img src="img/logo.png">
+                <a href="/dashboard"><img src="img/logo.png"></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -63,8 +63,7 @@
                     <li id="options" >
                         <a href="#">{{users.name}} <i class="fa fa-angle-down"></i></a>
                         <ul class="subnav">
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Board</a></li>
+                            <li><a href="/account">Profile</a></li>
                             <li><a href="/logout">Logout</a></li>
                         </ul>
                     </li>
@@ -86,8 +85,8 @@
                         Name, Genre, Unit, Description, website, tags
                     -->
                     <div class="form-group">
-                        <label for="streamEmail">Stream Name:</label>
-                        <input type="text" class="form-control" id="streamEmail">
+                        <label for="streamName">Stream Name:</label>
+                        <input type="text" class="form-control" id="streamName">
                     </div>
                     <div class="form-group">
                         <label for="streamGenre">Stream Genre:</label>
@@ -117,8 +116,8 @@
                         <input type="text" class="form-control" id="streamWebsite">
                     </div>
                     <div class="form-group">
-                        <label for="streamTag">Stream Tags (comma separated):</label>
-                        <input type="text" class="form-control" id="streamTag">
+                        <label for="streamTags">Stream Tags (comma separated):</label>
+                        <input type="text" class="form-control" id="streamTags">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -140,8 +139,8 @@
                     <div class="form-group">
                         <label for="dataStream">Stream:</label>
                         <select type="text" class="form-control" id="dataStream">
-                            <option value="tv">Durham Weather</option>
-                            <option value="business">People with Ebola</option>
+                            <option value="546846819f10b2dc7e04a224">Durham Weather</option>
+                            <option value="546853c0f48b87e385ddf7fd">People with Ebola</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -149,15 +148,12 @@
                         <input type="text" class="form-control" id="dataValue">
                     </div>
                     <div class="form-group">
-                        <div class='input-group date' id='datetimepicker1'>
-                            <input type='text' class="form-control" />
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="dataSource">Data Time:</label>
+                        <label for="dataTime">Data Time:</label>
                         <input type="checkbox" id="now" value="">Now</label>
+                        <div class='input-group date' id='dataTime'>
+                            <input type='text' readonly class="form-control" />
+                            <span class="input-group-addon">Date/Time</span>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="dataSource">Data Source (Where did you get this info?):</label>
@@ -166,7 +162,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="createStream">Create New Data Bubble</button>
+                    <button type="button" class="btn btn-primary" id="createBubble">Create New Data Bubble</button>
                 </div>
             </div>
         </div>
@@ -185,12 +181,12 @@
 
                         <div class="row col-md-2 col-xs-2 card-genre">
                             <a href="#about">
-                                <img align="left" src="{{genre}}"> <!-- Edit this for specific genre -->
+                                <img align="left" src="{{bubbles[stream].genreSrc}}"> <!-- Edit this for specific genre -->
                             </a>
                             
                         </div>
                         <div class="row col-md-offset-1 col-md-7 col-xs-offset-1 col-xs-7 card-title">
-                            {{bubbles.name}} <!-- Edit this for specific title -->
+                            <a ng-href="/streamPage?id={{stream}}">{{bubbles[stream].name}}</a> <!-- Edit this for specific title -->
                         </div>
                         <div class=" col-md-1 col-xs-offset-1 col-xs-1  col-xs-offset-1 card-follow">
                             <a href="#about">
@@ -200,11 +196,11 @@
                         </div>
                     </div>
                     <div class="midbar">
-                        <div class="row col-md-8 card-value">{{recent.value}}</div> <!-- Edit this for value -->
+                        <div class="row col-md-8 card-value">{{bubbles[stream].recent.value}}</div> <!-- Edit this for value -->
                         <div class="row col-md-4 card-unit">People</div> <!-- Edit this for currency -->
                     </div>
                     <div class="bottombar">
-                        <div class="col-md-offset-1 row col-md-5 card-date">{{recent.time}}</div>
+                        <div class="col-md-offset-1 row col-md-5 card-date">{{bubbles[stream].recent.time}}</div>
                         <div class="col-md-offset-1 row col-md-5 card-star">
                             <a href="#about">
                                 <i class="fa fa-star-o"></i> <!-- Edit this if a favorite to fa-star -->
@@ -253,58 +249,68 @@
           console.log($scope.users);
           
           $scope.streams = $scope.users.following;
+          for (var j = 0; j < $scope.users.owner.length; j ++) {
+            $scope.streams.push($scope.users.owner[j]);
+          }
           console.log($scope.streams);
 
           for (i = 0; i < $scope.streams.length; i++) {
             console.log($scope.streams[i]);
 
-            var streamid = '/stream?id='.concat($scope.streams[i]);
+            
+            //(function(i){return function(data) {}; })(i)
+            
+            $scope.bubbles = {};
+            $http.get('/stream?id=' + $scope.streams[i]).success((function(i){return function(data) {
+                var streamid = $scope.streams[i];
+                console.log('/stream?id=' + streamid);
+    
+                $scope.bubbles[streamid] = data;
+                console.log('bubbles update');
+                console.log(streamid);
+                console.log($scope.bubbles);
+                $scope.bubbles[streamid].recent = data.points[data.points.length-1];
+                console.log(data.points[data.points.length-1]);
 
-            console.log(streamid);
-            $http.get(streamid).success(function(data) {
-                $scope.bubbles = data;
-                $scope.recent = $scope.bubbles.points[$scope.bubbles.points.length-1];
-                console.log($scope.bubbles.points[$scope.bubbles.points.length-1]);
 
-
+                if ($scope.bubbles[streamid].genre == 'health') {
+                    $scope.bubbles[streamid].genreSrc = "/img/Health.png";
                 
-                if ($scope.bubbles.genre == 'health') {
-                    $scope.genre = "/img/Health.png";
-                
-                } else if ($scope.bubbles.genre == 'finance') {
-                    $scope.genre = "/img/Finance.png";
+                } else if ($scope.bubbles[streamid].genre == 'finance') {
+                    $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
                     
-                } else if ($scope.bubbles.genre == 'environment') {
-                    $scope.genre = "/img/Environment.png";
+                } else if ($scope.bubbles[streamid].genre == 'environment') {
+                    $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
                     
-                } else if ($scope.bubbles.genre == 'politics') {
-                    $scope.genre = "/img/Politics.png";
+                } else if ($scope.bubbles[streamid].genre == 'politics') {
+                    $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
                     
-                } else if ($scope.bubbles.genre == 'sports') {
-                    $scope.genre = "/img/Sports.png";
+                } else if ($scope.bubbles[streamid].genre == 'sports') {
+                    $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
                     
-                } else if ($scope.bubbles.genre == 'tv') {
-                    $scope.genre = "/img/TV.png";
+                } else if ($scope.bubbles[streamid].genre == 'tv') {
+                    $scope.bubbles[streamid].genreSrc = "/img/TV.png";
                     
-                } else if ($scope.bubbles.genre == 'energy') {
-                    $scope.genre = "/img/Energy.png";
+                } else if ($scope.bubbles[streamid].genre == 'energy') {
+                    $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
                     
-                } else if ($scope.bubbles.genre == 'education') {
-                    $scope.genre = "/img/Education.png";
+                } else if ($scope.bubbles[streamid].genre == 'education') {
+                    $scope.bubbles[streamid].genreSrc = "/img/Education.png";
                     
-                } else if ($scope.bubbles.genre == 'business') {
-                    $scope.genre = "/img/Business.png";
+                } else if ($scope.bubbles[streamid].genre == 'business') {
+                    $scope.bubbles[streamid].genreSrc = "/img/Business.png";
                     
-                } else if ($scope.bubbles.genre == 'inequality') {
-                    $scope.genre = "/img/Inequality.png";
+                } else if ($scope.bubbles[streamid].genre == 'inequality') {
+                    $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
                    
                 }
 
-            })
+            }; })(i))
 
            
 
           }
+          console.log($scope.bubbles)
 
         });
       });
@@ -343,7 +349,72 @@
             })
             socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
             
-            $('#datetimepicker1').datetimepicker();
+            $('#dataTime').datetimepicker();
+
+            $('#createStream').click(function(){
+                if ($('#streamName').val() != '' && $('#streamUnit').val()!= '') {
+                    $.post('/stream', {
+                        name: $('#streamName').val(),
+                        genre: $('#streamGenre').val(),
+                        unit: $('#streamUnit').val(),
+                        description: $('#streamDescription').val(),
+                        website: $('#streamWebsite').val(),
+                        tags: $('#streamTags').val().split(',')
+                    }, function(data) {
+                        console.log('success');
+                        console.log(data);
+                        window.location = '/streamPage?id=' + data._id;
+                    })
+                    $('#streamName').val('')
+                    $('#streamGenre').val('')
+                    $('#streamUnit').val('')
+                    $('#streamDescription').val('')
+                    $('#streamWebsite').val('')
+                    $('#streamTags').val('')
+                    $('#newStreamModal').modal('hide');
+                }
+            })
+
+            $('#now').click(function() {
+                var thisCheck = $(this);
+                if (thischeck.is (':checked')) {
+                    //$('#dataTime').val('now');
+                    console.log('checked');
+                } else {
+                    console.log('unchecked');
+                }
+            });
+
+
+            $('#createBubble').click(function(){
+
+                var time = 0;
+                //Need to fix up time
+                if ($('#now').checked()) {
+                    time = Date.now();
+                } else {
+                    console.log($('#dataTime').val())
+                }
+
+                if ($('#dataStream').val() != '' && $('#dataValue').val()!= '' && $('#dataSource').val()!= '') {
+                    $.post('/point', {
+                        stream_id: $('#dataStream').val(),
+                        value: $('#dataValue').val(),
+                        source: $('#dataSource').val(),
+                        time: time
+                    }, function(data) {
+                        console.log('success');
+                        console.log(data);
+                    })
+                    $('#dataStream').val('')
+                    $('#dataValue').val('')
+                    $('#dataSource').val('')
+                    $('#dataTime').val('')
+                    $('#now').val('')
+                    $('#newStreamModal').modal('hide');
+                }
+            })
+
             /*socket.emit('update', {
                 stream: '546853c0f48b87e385ddf7fd',
                 value: 20,
