@@ -43,7 +43,7 @@
     <script src="javascripts/sidr/jquery.sidr.js"></script>
 </head>
 
-<body id="page-top" class="header" data-spy="scroll" data-target=".navbar-custom">
+<body ng-app="userApp" ng-controller="UserCtrl" id="page-top" class="header" data-spy="scroll" data-target=".navbar-custom">
 
 <div id="fb-root"></div>
 <!--
@@ -110,6 +110,7 @@
         <!-- /.container -->
     </nav>
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
     <script>
       var app = angular.module('userApp', []);
       
