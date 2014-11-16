@@ -241,7 +241,7 @@ app.get('/', (req, res) ->
 #  console.log(req.user)
   #res.sendfile(__dirname + '/public/home.ejs')
   if req.user?
-    res.redirect('/dashboard')
+    res.redirect('/explore')
   else
     res.render('home.html')
 )

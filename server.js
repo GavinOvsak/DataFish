@@ -282,7 +282,7 @@ app.get('/bypasshome', function(req, res) {
 
 app.get('/', function(req, res) {
   if (req.user != null) {
-    return res.redirect('/dashboard');
+    return res.redirect('/explore');
   } else {
     return res.render('home.html');
   }
