@@ -1,0 +1,48 @@
+<html>
+<head>
+	<title>
+		Testing Websockets
+	</title>
+</head>
+<body>
+	<h1>Testing Websockets</h1>
+	<h2>Login</h2>
+	Email
+	<input type="text" id="email"></input>
+	Password
+	<input type="text" id="password"></input>
+	<h2>Register</h2>
+	Name
+	<input type="text" id="regName"></input>
+	Email
+	<input type="text" id="regEmail"></input>
+	Password
+	<input type="text" id="regPassword"></input>
+	<h2>Forgot</h2>
+	Email
+	<input type="text" id="forgotEmail"></input>
+
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		var socket = io.connect();
+		socket.on('newData', function(data) {
+			console.log(data);
+		})
+		socket.emit('listen', {streams: ['546800481c9771e048ae1826']});
+		socket.emit('update', {
+			key: '5467fae1b1ba4ec34659b8b3', 
+			point: {
+				stream: '546800481c9771e048ae1826',
+				value: 20
+			}
+		});
+		//post login to /login
+		//post register to /register
+		//post forgot to /forgot
+		
+		//Connect to websockets, give it a key and listen to a specific stream.
+		//Update that stream and get it back.
+	</script>
+</body>
+</html>

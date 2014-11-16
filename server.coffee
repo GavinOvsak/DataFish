@@ -3,7 +3,7 @@ socket = require('socket.io')
 express = require('express')
 LocalStrategy = require('passport-local').Strategy
 bcrypt = require('bcrypt')
-secrets = require('./secrets.json')
+#secrets = require('./secrets.json')
 http = require('http')
 passport = require('passport')
 mongoose = require('mongoose')
@@ -11,7 +11,7 @@ LocalStrategy = require('passport-local').Strategy
 
 salt = bcrypt.genSaltSync(10)
 
-mongoose.connect secrets.mongoURL
+mongoose.connect "mongodb://nodejitsu:39095eb4b324f0ec29154cc380c012ea@troup.mongohq.com:10060/nodejitsudb4748235279"#secrets.mongoURL
 
 db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
@@ -21,18 +21,23 @@ db.once('open', ->
     console.log('All users: ')
     console.log(users)
   )
+  Stream.find({}, (err, streams)->
+    console.log('All streams: ')
+    console.log(streams)
+  )
 )
 
 ###
 ToDo list:
-- Get requests for public data
-- Make Authentication for Apps
+x Get requests for public data
 - Make Authentication for Websites
+- Make Authentication for Apps
 - Make API for new stream, new data, updates
 ###
 
 User_Schema = mongoose.Schema({
   name: String,
+  email: String,
   password: String,
   level: Number,
   following: Array, #array of ids
@@ -51,14 +56,14 @@ Client_Schema = mongoose.Schema({
   socket: Object
 });
 
-Client = mongoose.model('Client', User_Schema)
+Client = mongoose.model('Client', Client_Schema)
 
 Stream_Schema = mongoose.Schema({
   name: String,
   unit: String,
   genre: String,
   description: String,
-  points: Number,
+  points: [],
   website: String,
   picture: String,
   average: Number,
@@ -79,9 +84,11 @@ Point = mongoose.model('Point', Point_Schema)
 
 
 if false
+  User.remove({}, ->)
   newUser = new User({
     name: 'Bob1',
-    password: 'password',
+    email: 'test@test.com'
+    password: bcrypt.hashSync('password', salt),
     level: 1,
     following: [],
     favorites: [],
@@ -96,6 +103,34 @@ if false
     console.log('Saved')
     )
 
+###
+name: String,
+  unit: String,
+  genre: String,
+  description: String,
+  points: Number,
+  website: String,
+  picture: String,
+  average: Number,
+  subscriptions: Array
+###
+
+#GET /user gives you the current user if you are signed in
+
+if false
+  #Stream.remove({}, ->)
+  newStream = new Stream({
+    name: 'Durham Temp',
+    genre: 'Weather',
+    description: '',
+    points: [],
+    website: '',
+    picture: '',
+    average: 0,
+    subscriptions: []
+  })
+  newStream.save()
+  console.log(newStream)
 
 passport.serializeUser (user, done) ->
   done null, user._id
@@ -107,21 +142,15 @@ passport.deserializeUser (obj, done) ->
 
 passport.use new LocalStrategy { usernameField: 'email', passwordField: 'password' }, 
   (email, password, done) ->
-
-    ###
-    User.find { email: email}, 
-      (err, people) ->
-        console.log(people)
+    console.log(arguments)
+    User.findOne { email: email}, 
+      (err, person) ->
+        console.log(person)
         done err if err?
-        once = true
-        for person in people
-          console.log([arguments, person])
-          if bcrypt.compareSync(password, person.password) and once
-            done(null, people[0])
-            once = false
-        if once
+        if bcrypt.compareSync(password, person.password)
+          done(null, person)
+        else
           done(null)
-    ###
 
 app = express()
 
@@ -145,38 +174,143 @@ httpServer = http.createServer(app).listen(8081)
 console.log('Server running at http://localhost:8081')
 
 io = socket.listen(httpServer)
-io.set('log level', 0)
+io.set('log level', 1)
+
+app.post('/login',
+  passport.authenticate('local'), (req, res) ->
+    # If this function gets called, authentication was successful.
+    # `req.user` contains the authenticated user.
+    res.json(req.user)
+)
+
 
 app.get('/', (req, res) ->
   res.json('Hello, World!')
+)
 
+app.get('/getToken', (req, res) ->
+  #Need to have the username and password
+  #Make new client
+  if req.query.email? and req.query.password?
+    User.findOne({email: req.query.email}, (err, user) ->
+      console.log(err) if err?
+      if user?# and bcrypt.compareSync(req.query.password, user.password)
+        newClient = new Client({
+          user_id: user._id
+        })
+        newClient.save()
+        res.json({key: newClient._id})
+      else
+        res.json('no user with that email')
+    )
+  else
+    res.json('Need email and password')
 )
 
 #/user?id=10987987&key=9769865
 
+publiclyViewableUser = (user) ->
+  publicUser = {
+    name: user.name,
+    email: user.email,
+    bio: user.bio,
+    level: user.level,
+    picture: user.picture,
+    isVerified: user.isVerified,
+    following: user.following,
+    favorites: user.favorites,
+    owner: user.owner,
+    editor: user.editor
+  }
 
+io.sockets.on 'connection', (socket) ->
+  socket.on 'listen', (data) ->
+    console.log(['listen', data])
+
+  socket.on 'update', (data) ->
+    console.log(['update', data])
+
+  socket.emit('newData', {'hey': 'world'})
 
 app.get('/user', (req, res) ->
 #if req.query.id != null
 #  req.query.id
   if req.query.id?
-    User.find({'_id': req.query.id}, (err, users) ->
-      req.json(users)
-      )
+    User.findOne({'_id': req.query.id}, (err, user) ->
+      #This is going to need sanitising for publicly visible stuff
+      if user?
+        res.json(publiclyViewableUser(user))
+      else
+        res.json()
+    )
+  else if req.user?
+    res.json(req.user)
   else
     res.json(null)
 )
 
+app.get('/hack/allUsers', (req, res) ->
+  User.find({}, (err, users) ->
+    res.json(users)
+  )
+)
+
+app.get('/hack/allStreams', (req, res) ->
+  Stream.find({}, (err, streams) ->
+    res.json(streams)
+  )
+)
+
 app.post('/user', (req, res) ->
-  
+  #check if authenticated
+  console.log(req.body)
+  if req.query.key? and req.query.id? or false #Need to allow website integration
+    Client.findOne({_id: req.query.key}, (err, client) ->
+      console.log(err) if err?
+      if client? and client.user_id is req.query.id
+        User.findOne({_id: client.user_id}, (err, user) ->
+          console.log(err) if err?
+          if user?
+            user.name = req.body.name if req.body.name?
+            user.email = req.body.email if req.body.email?
+            user.level = req.body.level if req.body.level?
+            user.picture = req.body.picture if req.body.picture?
+            user.bio = req.body.bio if req.body.bio?
+            user.isVerified = req.body.isVerified if req.body.isVerified?
+
+            #if req.body.password?, encrypt
+
+            user.following = req.body.following if req.body.following?
+            user.favorites = req.body.favorites if req.body.favorites?
+            user.editor = req.body.editor if req.body.editor?
+
+            user.save()
+            res.json(publiclyViewableUser(user))
+          else
+            res.json('No User')
+        )
+      else
+        res.json([client, "id doesn't match key"])
+    )
+  else
+    res.json('You are not authenticated')
 )
 
 app.delete('/user', (req, res) ->
-  
+
 )
 
 app.get('/stream', (req, res) ->
-
+  if req.query.id?
+    Stream.findOne({'_id': req.query.id}, (err, stream) ->
+      console.log(err) if err?
+      if stream?
+        res.json(stream)
+      else
+        res.json()
+    )
+  else
+    res.json(null)
 )
 
 app.post('/stream', (req, res) ->
@@ -188,7 +322,16 @@ app.delete('/stream', (req, res) ->
 )
 
 app.get('/point', (req, res) ->
-
+  if req.query.id? and req.query.stream? 
+    Point.findOne({'_id': req.query.id, 'stream': req.query.stream}, (err, stream) ->
+      console.log(err) if err?
+      if stream?
+        res.json(stream)
+      else
+        res.json()
+    )
+  else
+    res.json(null)
 )
 
 app.post('/point', (req, res) ->
