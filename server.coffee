@@ -183,8 +183,42 @@ app.post('/login',
     res.json(req.user)
 )
 
+app.get('/logout', (req, res) ->
+  req.logout()
+  res.redirect('/')
+)
+
+app.post('/register', (req, res) ->
+  if req.body.email? and req.body.name? and req.body.password?
+    User.find({email: req.body.email}, (err, users) ->
+      if users.length is 0
+        newUser = new User({
+          name: req.body.name,
+          email: req.body.email
+          password: bcrypt.hashSync(req.body.password, salt),
+          level: 1,
+          following: [],
+          favorites: [],
+          owner: [],
+          editor: [],
+          picture: '',
+          bio: 'I am a new member!',
+          isVerified: false
+        })
+        newUser.save()
+        req.login(newUser, ->
+          res.json(newUser)
+          )
+      else
+        res.json('Already exists')
+    )
+    #Check if exists
+  else
+    res.json('Not enough info (name, email, password)')
+)
 
 app.get('/', (req, res) ->
+  console.log(req.user)
   res.json('Hello, World!')
 )
 

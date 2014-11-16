@@ -219,7 +219,45 @@ app.post('/login', passport.authenticate('local'), function(req, res) {
   return res.json(req.user);
 });
 
+app.get('/logout', function(req, res) {
+  req.logout();
+  return res.redirect('/');
+});
+
+app.post('/register', function(req, res) {
+  if ((req.body.email != null) && (req.body.name != null) && (req.body.password != null)) {
+    return User.find({
+      email: req.body.email
+    }, function(err, users) {
+      if (users.length === 0) {
+        newUser = new User({
+          name: req.body.name,
+          email: req.body.email,
+          password: bcrypt.hashSync(req.body.password, salt),
+          level: 1,
+          following: [],
+          favorites: [],
+          owner: [],
+          editor: [],
+          picture: '',
+          bio: 'I am a new member!',
+          isVerified: false
+        });
+        newUser.save();
+        return req.login(newUser, function() {
+          return res.json(newUser);
+        });
+      } else {
+        return res.json('Already exists');
+      }
+    });
+  } else {
+    return res.json('Not enough info (name, email, password)');
+  }
+});
+
 app.get('/', function(req, res) {
+  console.log(req.user);
   return res.json('Hello, World!');
 });
 
