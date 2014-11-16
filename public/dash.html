@@ -244,7 +244,7 @@
       
       app.controller('UserCtrl', function($scope, $http){
         
-        $http.get('/user').success(function(data) {
+        $http.get('/user?id=54681fb90d0903a9637f25f7').success(function(data) {
           $scope.users = data;
           
           console.log($scope.users);
@@ -341,7 +341,23 @@
         });
       });
     </script-->
+    <!--script>
+        $( '.card-value' ).each(function ( i, card-value ) {
 
+        var width = $( card-value ).width(),
+            html = '<span style="white-space:nowrap">',
+            line = $( card-value ).wrapInner( html ).children()[ 0 ],
+            n = 100;
+        
+            $( card-value ).css( 'font-size', n );
+
+            while ( $( line ).width() > width ) {
+                $( card-value ).css( 'font-size', n );
+            }
+
+            $( card-value ).text( $( line ).text() );
+        });
+    </script-->
 
  
 
