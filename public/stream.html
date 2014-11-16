@@ -95,6 +95,41 @@
         <!-- /.container -->
     </nav>
 
+     <script>
+                        $(document).ready(function(){
+                            function getParameterByName(name) {
+                                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                                    results = regex.exec(location.search);
+                                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+                            }
+
+                            debugger;
+                            console.log(getParameterByName('id'))
+                            var description = getParameterByName('description')
+                            var picture = getParameterByName('picture')
+                            var points = getParameterByName('points')
+                            console.log("description is" + description)
+                            console.log("picture is" + picture)
+                            console.log("points is" + points)
+                            console.log(getParameterByName('name'))
+
+
+
+                            var test = ({"name":"People with Ebola in US","genre":"health","tags":[],"_id":"546853c0f48b87e385ddf7fd","points":[{"time":"12am","stream_id":"546853c0f48b87e385ddf7fd","source":"cdc","creator":"54681fb90d0903a9637f25f7","_id":"546853d8f48b87e385ddf7fe","__v":0},{"time":"1pm","stream_id":"546853c0f48b87e385ddf7fd","source":"cdc","creator":"54681fb90d0903a9637f25f7","_id":"546853ddf48b87e385ddf7ff","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54685d6a1850c35095f03ecc","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54685d6d1850c35095f03ecd","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54685d821850c35095f03ece","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54685ddb1850c35095f03ecf","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54685e0d97f41bf0955bf5f3","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54685e5397f41bf0955bf5f4","__v":0},{"value":23,"time":"2pm","stream_id":"546853c0f48b87e385ddf7fd","source":"cdc","creator":"54681fb90d0903a9637f25f7","_id":"54685e5a97f41bf0955bf5f5","__v":0},{"value":24,"time":"2pm","stream_id":"546853c0f48b87e385ddf7fd","source":"cdc","creator":"54681fb90d0903a9637f25f7","_id":"54685e8697f41bf0955bf5f6","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54685f821c3bdf7b97279997","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54685f8c1c3bdf7b97279998","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54685fafd5c115b097324eb1","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54685fb7d5c115b097324eb2","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"546860ba990d28ba98d003dc","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"546860c3990d28ba98d003dd","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54686196351383ca99dfe917","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"546861a3351383ca99dfe918","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54686521351383ca99dfe919","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54686543351383ca99dfe91a","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54686560351383ca99dfe91b","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"5468657d351383ca99dfe91c","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54686582351383ca99dfe91d","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"546865f6351383ca99dfe91e","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54686622351383ca99dfe91f","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54686628351383ca99dfe920","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54686d38648fe978a57fcb22","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"5468732599b241c4d77efa0e","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"546877dba26ec12db019ac32","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"5468794699b241c4d77efa0f","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54687ba8933fd045b4d2c870","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"54689dbc9e1a4a00008d2f29","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"5468a6649e1a4a00008d2f2c","__v":0},{"value":20,"time":"100000","stream_id":"546853c0f48b87e385ddf7fd","source":"Me","_id":"5468a9509e1a4a00008d2f2d","__v":0}]})
+                            console.log(test)
+
+                            console.log("Name is " + test.name)
+
+                            /*
+                            $.get('http://datafish.nodejitsu.com/stream?id=' + getParameterByName('id'), function(data) {
+                                console.log(data);
+
+                            })
+                            */
+                            </script>
+                            
+
     <div id="top" class="dash container">
        <h1>Flow Title</h1>
        <div class="stream">
@@ -118,21 +153,7 @@
                 <div class="row col-md-8 card-value">
                     <div id="chart"></div>
                     <!-- Load c3.css -->
-                    <script>
-                        $(document).ready(function(){
-                            function getParameterByName(name) {
-                                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-                                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                                    results = regex.exec(location.search);
-                                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-                            }
-
-                            debugger;
-                            console.log(getParameterByName('id'))
-
-                            $.get('/stream?id=' + getParameterByName('id'), function(data) {
-                                console.log(data);
-                            })
+                    <script type="text/javascript">
 
                             var chart = c3.generate({
                                 //bindto: '#chart',

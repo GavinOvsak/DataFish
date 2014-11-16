@@ -689,9 +689,9 @@ app.get('/point', function(req, res) {
 });
 
 app.post('/point', function(req, res) {
-  if ((req.user != null) && (req.query.stream != null) && (req.body.value != null) && (req.body.time != null) && (req.body.source != null)) {
+  if ((req.user != null) && (req.body.stream_id != null) && (req.body.value != null) && (req.body.time != null) && (req.body.source != null)) {
     return Stream.findOne({
-      _id: req.query.stream
+      _id: req.body.stream_id
     }, function(err, stream) {
       var listener, newPoint, _i, _len, _ref, _ref1;
       if (stream != null) {
