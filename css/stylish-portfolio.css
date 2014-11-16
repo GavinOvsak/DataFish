@@ -688,7 +688,7 @@ i.scroll:hover {
     text-transform: uppercase;
     /*font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;*/
     font-family: 'Ubuntu',light;
-    background-color: none;
+    background-color: white;
     color: none;
 }
 
@@ -770,16 +770,20 @@ i.scroll:hover {
     height: auto;
     opacity: 0;
     transition: all 0.1s;
-    
+    color: #6A94D4;
     float:none;
 }
 .subnav li {
     float: none;
     border-bottom: 1px solid #CDF76F;
     border: 1px solid #CDF76F;
+    background-color: white;
+    color: #6A94D4;
 }
 .subnav li a {
     border-bottom: 1px solid #CDF76F;
+    color: #6A94D4;
+    
 }
 #options:hover .subnav {
     visibility: visible;

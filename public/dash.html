@@ -63,7 +63,7 @@
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+            <div class="navbar-right collapse navbar-collapse navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
                     <li class="hidden">
@@ -75,9 +75,10 @@
                     <li id="new-datapoint">
                         <a href="#">New Datapoint</a>
                     </li>
-                    <li id="options">
-                        <a href="#">Username</a>
-                        <ul class="subnav">
+                    <li id="options" >
+                        <a href="#"><i class="fa fa-angle-down"></i></a>
+                        <ul  ng-controller="NameCtrl" class="subnav">
+                            <li>{{user.name}}</li>
                             <li><a href="#">Profile</a></li>
                             <li><a href="#">Board</a></li>
                             <li><a href="/logout">Logout</a></li>
@@ -225,8 +226,37 @@
     </script>
 -->
 
-    
+    <!--script>
+      var name = angular.module('name', []);
+      name.controller('NameCtrl', function ($http){
+        $http.get('/user').success(function(data) {
+          user = data;
+        });
+      });
+    </script-->
 
+    <!--script>
+        theApp.factory('mainInfo', function($http) { 
+
+            var obj = {content:null};
+
+            $http.get('/user').success(function(data) {
+                // you can do some processing here
+                obj.content = data;
+            });    
+
+            return obj;    
+        });
+    </script-->
+
+    <script>
+        var name= angular.module('nameApp', []);
+          nameApp.controller('NameCtrl', function ($scope, $http){
+            $http.get('/user').success(function(data) {
+              $scope.users = data;
+            });
+          });
+    </script>
 
 
     <script class="cssdeck" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
