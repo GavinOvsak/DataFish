@@ -135,7 +135,7 @@ video#bgvid {
 
 /* Full Page Image Header Area */
 
-.header {
+.header-front {
   display: table;
   height: 100%;
   width: 100%;
@@ -325,12 +325,12 @@ i.scroll:hover {
 
 .navbar {
     margin-bottom: 0;
-    border-bottom: 1px solid rgba(255,255,255,.3);
+    border-bottom: none;
     text-transform: uppercase;
     /*font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;*/
     font-family: 'Ubuntu',light;
-    background-color: rgba(255, 255, 255, .5);
-    color: #CDF76F;
+    background-color: none;
+    color: none;
 }
 
 .navbar-brand {
@@ -380,11 +380,13 @@ i.scroll:hover {
 
     .top-nav-collapse {
         padding: 0;
-        background-color: rgba(255,255,255, .3);
+        background-color:none;
+        background:none;
     }
 
     .navbar-custom.top-nav-collapse {
-        border-bottom: 1px solid rgba(255,255,255,.3);
+        border-bottom: 1px solid rgba(255,255,255,0);
+        background: none;
     }
 }
 
