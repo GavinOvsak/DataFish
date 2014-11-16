@@ -73,8 +73,8 @@
                         Name, Genre, Unit, Description, website, tags
                     -->
                     <div class="form-group">
-                        <label for="streamEmail">Stream Name:</label>
-                        <input type="text" class="form-control" id="streamEmail">
+                        <label for="streamName">Stream Name:</label>
+                        <input type="text" class="form-control" id="streamName">
                     </div>
                     <div class="form-group">
                         <label for="streamGenre">Stream Genre:</label>
@@ -127,8 +127,8 @@
                     <div class="form-group">
                         <label for="dataStream">Stream:</label>
                         <select type="text" class="form-control" id="dataStream">
-                            <option value="tv">Durham Weather</option>
-                            <option value="business">People with Ebola</option>
+                            <option value="546846819f10b2dc7e04a224">Durham Weather</option>
+                            <option value="546853c0f48b87e385ddf7fd">People with Ebola</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -136,15 +136,12 @@
                         <input type="text" class="form-control" id="dataValue">
                     </div>
                     <div class="form-group">
-                        <div class='input-group date' id='datetimepicker1'>
-                            <input type='text' class="form-control" />
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="dataSource">Data Time:</label>
+                        <label for="dataTime">Data Time:</label>
                         <input type="checkbox" id="now" value="">Now</label>
+                        <div class='input-group date' id='dataTime'>
+                            <input type='text' readonly class="form-control" />
+                            <span class="input-group-addon">Date/Time</span>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="dataSource">Data Source (Where did you get this info?):</label>
@@ -153,7 +150,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="createStream">Create New Data Bubble</button>
+                    <button type="button" class="btn btn-primary" id="createBubble">Create New Data Bubble</button>
                 </div>
             </div>
         </div>
@@ -297,9 +294,6 @@
     <!-- Include the Sidr JS -->
     <!--<script src="javascripts/sidr/jquery.sidr.js"></script>-->
 
-
-
-
     <script>
       var app = angular.module('userApp', []);
       app.controller('UserCtrl', function($scope, $http){
@@ -319,7 +313,48 @@
             })
             socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
             
-            $('#datetimepicker1').datetimepicker();
+            $('#dataTime').datetimepicker();
+
+            $('#createStream').click(function(){
+                $.post('/stream', {
+                    name: $('#streamName').val(),
+                    genre: $('#streamGenre').val(),
+                    unit: $('#streamUnit').val(),
+                    description: $('#streamDescription').val(),
+                    website: $('#streamWebsite').val(),
+                    tags: $('#streamTags').val().split(',')
+                })
+                $('#streamName').val('')
+                $('#streamGenre').val('')
+                $('#streamUnit').val('')
+                $('#streamDescription').val('')
+                $('#streamWebsite').val('')
+                $('#streamTags').val('')
+            })
+
+            $('#createBubble').click(function(){
+
+                var time = 0;
+                //Need to fix up time
+                if ($('#now').checked()) {
+                    time = Date.now();
+                } else {
+                    console.log($('#dataTime').val())
+                }
+
+                $.post('/point', {
+                    stream_id: $('#dataStream').val(),
+                    value: $('#dataValue').val(),
+                    source: $('#dataSource').val(),
+                    time: time
+                })
+                $('#dataStream').val('')
+                $('#dataValue').val('')
+                $('#dataSource').val('')
+                $('#dataTime').val('')
+                $('#now').val('')
+            })
+
             /*socket.emit('update', {
                 stream: '546853c0f48b87e385ddf7fd',
                 value: 20,
