@@ -318,6 +318,7 @@ app.get('/userPage', function(req, res) {
 publiclyViewableUser = function(user) {
   var publicUser;
   return publicUser = {
+    _id: user._id,
     name: user.name,
     email: user.email,
     bio: user.bio,
