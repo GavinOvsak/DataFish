@@ -13,47 +13,19 @@
     <link href="/css/bootstrap.css" rel="stylesheet">
 
     <!-- Add custom CSS here -->
-  <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
     <link href="/css/stylish-portfolio.css" rel="stylesheet">
     <!--link href="css/flat-ui.css" rel="stylesheet"-->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="javascripts/sidr/stylesheets/jquery.sidr.light.scss">
-      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <!--    <script src="/js/jquery.fittext.js"></script>-->
     <script src="/js/jquery.textfill.js"></script>
-    <script>
-        $(document).ready(function() {
-            $("#responsive_headline").text('70')
-            a = $("#responsive_headline")
-//            debugger;
-            a.textfill({
-                widthOnly: true, 
-                changeLineHeight: true,
-                success: function() {
-                    console.log("yay!")
-                },
-                fail: function() {
-                    alert("boo hoo!")
-                }
-            });
-        });
-    </script>
 
 </head>
 
 <body id="page-top" class="header" data-spy="scroll" data-target=".navbar-custom">
 
-<div id="fb-root"></div>
-<!--
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
--->
-      <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
@@ -70,31 +42,31 @@
                         <a href="#page-top"></a>
                     </li>
                     <li id="new-stream">
-                        <a href="#">New Stream</a>
+                        <a href="#newStreamModal" data-toggle="modal" data-target="#newStreamModal">New Stream</a>
                     </li>
                     <li id="new-datapoint">
-                        <a href="#">New Datapoint</a>
+                        <a href="#">New Databubble</a>
                     </li>
-                    <li id="options" >
-                        <a href="#"><i class="fa fa-angle-down"></i></a>
-                        <ul  ng-controller="NameCtrl" class="subnav">
-                            <li>{{user.name}}</li>
+                    <li id="options" ng-app="userApp" ng-controller="UserCtrl" >
+                        <a href="#">{{users.name}} <i class="fa fa-angle-down"></i></a>
+                        <ul class="subnav">
                             <li><a href="#">Profile</a></li>
                             <li><a href="#">Board</a></li>
                             <li><a href="/logout">Logout</a></li>
                         </ul>
                     </li>
-                 
-            
-               
-                
             </div>
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container -->
     </nav>
+    
+
 
     <div id="top" class="dash container">
+        <!-- <script type="text/javascript">
+            $('#newStreamModal').modal()
+        </script>-->
        <h1>Stream</h1>
        <div class="row col-md-4 col-xs-4">
            <div class="flat-card">
@@ -126,13 +98,26 @@
                         <a href="#about">
                             <i class="fa fa-star-o"></i> <!-- Edit this if a favorite to fa-star -->
                         </a>
-                        
                     </div>
                 </div>
             </div>
         </div>
 
-
+        <div id="newStreamModal" class="modal fade" tabindex="-2" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Create New Data Stream</h3>
+            </div>
+            <div class="modal-body">
+                <p>To request a resume or get in touch, you can write me a message here. Alternatively, you can contact me through <a href="https://plus.google.com/108127518601412327477" target="_blank">Google+</a>, <a href="https://www.facebook.com/ramen.forever" target="_blank">Facebook</a>, or <a href="https://www.linkedin.com/profile/view?id=116646100" target="_blank">LinkedIn</a>. Hope to hear from you! Be sure to let me know how best to reach you.</p>
+                <textarea placeholder="Message" name="entry.437456649" rows= "8" cols= "0" class= "ss-q-long" id= "entry_437456649" dir= "auto" style= "resize:vertical;width:90%;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <input class="btn btn-primary" aria-hidden="true" type= "submit" onclick="$('#newStreamModal').modal('hide')" name= "submit" value="Create" id= "ss-submit">
+            </div>
+        </div>
+        
 
 
          <div class="row col-md-4 col-xs-4">
@@ -212,88 +197,75 @@
 
     </div>
 
+    <!-- Custom JavaScript for the Side Menu and Smooth Scrolling -->
 
-   
-    
-    
-    <!-- JavaScript -->
-
-
+<!---      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>-->
+    <script src="js/jquery-1.10.2.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
-    <!--<script type="text/javascript" src="/js/ng-FitText.js"></script>
-    <script>
-        var myApp = angular.module('myApp', ['ngFitText']);
-    </script>
--->
-
-    <!--script>
-      var name = angular.module('name', []);
-      name.controller('NameCtrl', function ($http){
-        $http.get('/user').success(function(data) {
-          user = data;
-        });
-      });
-    </script-->
-
-    <!--script>
-        theApp.factory('mainInfo', function($http) { 
-
-            var obj = {content:null};
-
-            $http.get('/user').success(function(data) {
-                // you can do some processing here
-                obj.content = data;
-            });    
-
-            return obj;    
-        });
-    </script-->
-
-    <script>
-        var name= angular.module('nameApp', []);
-          nameApp.controller('NameCtrl', function ($scope, $http){
-            $http.get('/user').success(function(data) {
-              $scope.users = data;
-            });
-          });
-    </script>
-
-
-    <script class="cssdeck" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.14.2/TweenMax.min.js"></script>
-    <script src="js/jquery-1.10.2.js"></script>
     <script src="js/bootstrap.js"></script>
-    <!-- Custom JavaScript for the Side Menu and Smooth Scrolling -->
-
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        var socket = io.connect();
-        socket.on('newData', function(data) {
-            console.log(data);
-        })
-        socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
-        socket.emit('update', {
-            stream: '546853c0f48b87e385ddf7fd',
-            value: 20,
-            time: '100000',
-            source: 'Me'
-        });
-        //post login to /login
-        //post register to /register
-        //post forgot to /forgot
-        
-        //Connect to websockets, give it a key and listen to a specific stream.
-        //Update that stream and get it back.
-    </script>
-
     <script src="js/grayscale.js"></script>
 
     <!-- Include jQuery -->
-    <script src="javascripts/jquery.js"></script>
+<!--    <script src="javascripts/jquery.js"></script>-->
     <!-- Include the Sidr JS -->
-    <script src="javascripts/sidr/jquery.sidr.js"></script>
+    <!--<script src="javascripts/sidr/jquery.sidr.js"></script>-->
+
+
+
+
+    <script>
+      var app = angular.module('userApp', []);
+      app.controller('UserCtrl', function($scope, $http){
+        $http.get('/user').success(function(data) {
+          $scope.users = data;
+          console.log("working");
+          console.log($scope.users);
+        });
+      });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            var socket = io.connect();
+            socket.on('newData', function(data) {
+                console.log(data);
+            })
+            socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
+            
+            /*socket.emit('update', {
+                stream: '546853c0f48b87e385ddf7fd',
+                value: 20,
+                time: '100000',
+                source: 'Me'
+            });*/
+            //post login to /login
+            //post register to /register
+            //post forgot to /forgot
+            
+            //Connect to websockets, give it a key and listen to a specific stream.
+            //Update that stream and get it back.
+
+
+/*            
+            $("#responsive_headline").text('70')
+            a = $("#responsive_headline")
+//            debugger;
+            a.textfill({
+                widthOnly: true, 
+                changeLineHeight: true,
+                success: function() {
+                    console.log("yay!")
+                },
+                fail: function() {
+                    alert("boo hoo!")
+                }
+            });*/
+        });
+    </script>
 
 </body>
 
