@@ -159,8 +159,9 @@ video#bgvid {
 
 /* Dash */
 .dash {
-  margin-top: 10%;
+  margin-top: 3%;
   text-align: center;
+  width:100%;
 
 }
 
@@ -819,10 +820,10 @@ i.scroll:hover {
   background-color: none;
   /*border: 1px solid #CDF76F;*/
   margin: 25px auto;
-  width: 400px;
+  width: 500px;
   height: 200px;
   position: relative;
-  color: #CDF76F;
+  color:#6A94D4;
   /*border-radius: 50px;*/
   font-family: 'Ubuntu',light;
 }
@@ -835,9 +836,10 @@ i.scroll:hover {
   height:20%;
   margin-top: none;
   float: none;
+
   background-color:rgba(255,165,0,0.9);
-  border-top-left-radius: 50px 50px;
-  border-top-right-radius: 50px 50px;
+  border-top-left-radius: 20px 20px;
+  border-top-right-radius: 20px 20px;
 }
 
 .midbar{
@@ -850,46 +852,67 @@ i.scroll:hover {
   display:inline-block;
   vertical-align: middle;
   width:100%;
-  height:20%;
+  height:12%;
   margin-top: none;
   float: none;
   background-color:rgba(255,165,0,0.9);
-  border-bottom-left-radius: 50px 50px;
-  border-bottom-right-radius: 50px 50px;
+  border-bottom-left-radius: 20px 20px;
+  border-bottom-right-radius: 20px 20px;
+  font-weight: bold;
 }
 
 .card-genre{
   text-align: left;
+  float:left;
+  padding-left:30px;
+  vertical-align: middle;
 }
 
 .card-title{
   text-align: center;
+  vertical-align: middle;
+  color: #CDF76F;
+  font-size: 30px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
+span { display:inline-block; vertical-align:middle; top-margin:20px; float: center; }
 
 .card-follow{
   text-align: right;
+  padding-left: 30px;
+  vertical-align: middle;
 }
 
 .card-value{
-  margin-top: 10%;
-  margin-left:10%;
+  margin-left: none;
   text-align: left;
+  font-size:50px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .card-unit{
-  margin-top: 10%;
-  
   text-align: right;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .card-date{
-  margin-top: 5%;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
   text-align: left;
 }
 
 .card-star{
-  margin-top: 5%;
-  text-align: right;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  float:right;
 }
 
 /*login form*/
