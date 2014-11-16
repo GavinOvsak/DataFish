@@ -251,6 +251,15 @@ app.get('/dashboard', (req, res) ->
     res.redirect('/')
 )
 
+app.get('/mystreams', (req, res) ->
+  #Verify logged in, or redirect to home
+  if req.user?
+    res.render('mystreams.html')
+  else
+    console.log('not logged in')
+    res.redirect('/')
+)
+
 app.get('/account', (req, res) ->
   #Verify logged in, or redirect to home
   if req.user?

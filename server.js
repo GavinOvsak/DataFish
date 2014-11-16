@@ -294,6 +294,15 @@ app.get('/dashboard', function(req, res) {
   }
 });
 
+app.get('/mystreams', function(req, res) {
+  if (req.user != null) {
+    return res.render('mystreams.html');
+  } else {
+    console.log('not logged in');
+    return res.redirect('/');
+  }
+});
+
 app.get('/account', function(req, res) {
   if (req.user != null) {
     return res.render('account.html');
