@@ -81,6 +81,7 @@ Stream_Schema = mongoose.Schema({
   website: String,
   picture: String,
   average: Number,
+  latestValue: Number,
   subscriptions: Array
 });
 
@@ -651,7 +652,8 @@ app.post('/stream', function(req, res) {
         description: req.body.description,
         tags: req.body.tags,
         website: req.body.website,
-        picture: req.body.picture
+        picture: req.body.picture,
+        latestValue: 0
       });
       newStream.save();
       req.user.owner.push(newStream._id);
@@ -711,6 +713,8 @@ app.post('/point', function(req, res) {
           source: req.body.source,
           creator: req.user._id
         });
+        stream.latestValue = req.body.value;
+        stream.save();
         newPoint.save();
         if (((_ref = listeners[stream._id]) != null ? _ref.length : void 0) != null) {
           _ref1 = listeners[stream._id];
