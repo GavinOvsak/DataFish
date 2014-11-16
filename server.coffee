@@ -552,8 +552,8 @@ app.get('/point', (req, res) ->
 
 app.post('/point', (req, res) -> 
   #Adding a new point to the stream.
-  if req.user? and req.query.stream? and req.body.value? and req.body.time? and req.body.source?
-    Stream.findOne({_id: req.query.stream}, (err, stream) ->
+  if req.user? and req.body.stream_id? and req.body.value? and req.body.time? and req.body.source?
+    Stream.findOne({_id: req.body.stream_id}, (err, stream) ->
       if stream?
         newPoint = new Point({
           value: req.body.value,
