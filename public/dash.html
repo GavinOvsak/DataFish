@@ -164,14 +164,15 @@
             <!-- <script type="text/javascript">
                 $('#newStreamModal').modal()
             </script>-->
-           <h1>Stream</h1>
+           <!--h1>Stream</h1-->
+           <div class="placeholder"></div>
            <div ng-repeat="stream in streams" class="row col-md-4 col-xs-4">
                <div class="flat-card">
                     <div class="topbar">
 
                         <div class="row col-md-2 col-xs-2 card-genre">
                             <a href="#about">
-                                <img align="left" src="img/Finance.png"> <!-- Edit this for specific genre -->
+                                <img align="left" src="{{genre}}"> <!-- Edit this for specific genre -->
                             </a>
                             
                         </div>
@@ -186,11 +187,11 @@
                         </div>
                     </div>
                     <div class="midbar">
-                        <div class="row col-md-8 card-value">14,098</div> <!-- Edit this for value -->
+                        <div class="row col-md-8 card-value">{{recent.value}}</div> <!-- Edit this for value -->
                         <div class="row col-md-4 card-unit">People</div> <!-- Edit this for currency -->
                     </div>
                     <div class="bottombar">
-                        <div class="col-md-offset-1 row col-md-5 card-date">11-16-14</div>
+                        <div class="col-md-offset-1 row col-md-5 card-date">{{recent.time}}</div>
                         <div class="col-md-offset-1 row col-md-5 card-star">
                             <a href="#about">
                                 <i class="fa fa-star-o"></i> <!-- Edit this if a favorite to fa-star -->
@@ -236,21 +237,59 @@
         $http.get('/user?id=54681fb90d0903a9637f25f7').success(function(data) {
           $scope.users = data;
           
-          console.log($scope.users)
+          console.log($scope.users);
           
-          $scope.streams = $scope.users.following
-          console.log($scope.streams)
+          $scope.streams = $scope.users.following;
+          console.log($scope.streams);
 
           for (i = 0; i < $scope.streams.length; i++) {
-            console.log($scope.streams[i])
+            console.log($scope.streams[i]);
 
-            var streamid = '/stream?id='.concat($scope.streams[i])
+            var streamid = '/stream?id='.concat($scope.streams[i]);
 
-            console.log(streamid)
+            console.log(streamid);
             $http.get(streamid).success(function(data) {
                 $scope.bubbles = data;
-                console.log($scope.bubbles.points)
+                $scope.recent = $scope.bubbles.points[$scope.bubbles.points.length-1];
+                console.log($scope.bubbles.points[$scope.bubbles.points.length-1]);
+
+
+                
+                if ($scope.bubbles.genre == 'health') {
+                    $scope.genre = "/img/Health.png";
+                
+                } else if ($scope.bubbles.genre == 'finance') {
+                    $scope.genre = "/img/Finance.png";
+                    
+                } else if ($scope.bubbles.genre == 'environment') {
+                    $scope.genre = "/img/Environment.png";
+                    
+                } else if ($scope.bubbles.genre == 'politics') {
+                    $scope.genre = "/img/Politics.png";
+                    
+                } else if ($scope.bubbles.genre == 'sports') {
+                    $scope.genre = "/img/Sports.png";
+                    
+                } else if ($scope.bubbles.genre == 'tv') {
+                    $scope.genre = "/img/TV.png";
+                    
+                } else if ($scope.bubbles.genre == 'energy') {
+                    $scope.genre = "/img/Energy.png";
+                    
+                } else if ($scope.bubbles.genre == 'education') {
+                    $scope.genre = "/img/Education.png";
+                    
+                } else if ($scope.bubbles.genre == 'business') {
+                    $scope.genre = "/img/Business.png";
+                    
+                } else if ($scope.bubbles.genre == 'inequality') {
+                    $scope.genre = "/img/Inequality.png";
+                   
+                }
+
             })
+
+           
 
           }
 
