@@ -43,20 +43,12 @@ httpServer = http.createServer(app).listen(8081);
 console.log('Server running at http://localhost:8081');
 
 app.get('/', function(req, res) {
-  if (req.user != null) {
-    return res.redirect('/dashboard');
-  } else {
-    return res.render('home.html');
-  }
+  res.render('home.html');
 });
 
 app.get('/dashboard', function(req, res) {
-  if (req.user != null) {
-    return res.render('dash.html');
-  } else {
-    console.log('not logged in');
-    return res.redirect('/');
-  }
+  res.render('dash.html');
+  
 });
 
 app.get('/account', function(req, res) {

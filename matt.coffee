@@ -26,28 +26,18 @@ console.log('Server running at http://localhost:8081')
 app.get('/', (req, res) ->
 #  console.log(req.user)
   #res.sendfile(__dirname + '/public/home.ejs')
-  if req.user?
+  
     res.redirect('/dashboard')
-  else
-    res.render('home.html')
-)
+  )
 
 app.get('/dashboard', (req, res) ->
   #Verify logged in, or redirect to home
-  if req.user?
     res.render('dash.html')
-  else
-    console.log('not logged in')
-    res.redirect('/')
 )
 
 app.get('/account', (req, res) ->
   #Verify logged in, or redirect to home
-  if req.user?
-    res.render('account.html')
-  else
-    console.log('not logged in')
-    res.redirect('/')
+  res.render('account.html')
 )
 
 app.get('/streamPage', (req, res) ->

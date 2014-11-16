@@ -87,7 +87,7 @@ Stream_Schema = mongoose.Schema({
 Stream = mongoose.model('Stream', Stream_Schema);
 
 Point_Schema = mongoose.Schema({
-  name: Number,
+  value: Number,
   source: String,
   stream_id: String,
   time: String,
@@ -384,9 +384,33 @@ io.sockets.on('connection', function(socket) {
     });
   });
   return socket.on('update', function(data) {
-    return socket.emit('newData', {
-      'hey': 'world'
-    });
+    console.log('updated');
+    if ((data.stream != null) && (data.value != null) && (data.time != null) && (data.source != null)) {
+      return Stream.findOne({
+        _id: data.stream
+      }, function(err, stream) {
+        var listener, newPoint, _i, _len, _ref, _ref1, _results;
+        if (stream != null) {
+          console.log(data);
+          newPoint = new Point({
+            value: data.value,
+            time: data.time,
+            stream_id: stream._id,
+            source: data.source
+          });
+          newPoint.save();
+          if (((_ref = listeners[stream._id]) != null ? _ref.length : void 0) != null) {
+            _ref1 = listeners[stream._id];
+            _results = [];
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              listener = _ref1[_i];
+              _results.push(listener.emit('newData', newPoint));
+            }
+            return _results;
+          }
+        }
+      });
+    }
   });
 });
 
@@ -498,14 +522,24 @@ app.post('/user', function(req, res) {
     if (req.body.isVerified != null) {
       req.user.isVerified = req.body.isVerified;
     }
-    if (req.body.following != null) {
-      req.user.following = req.body.following;
+    console.log(req.body);
+    if (req.body.follow != null) {
+      req.user.following.push(req.body.follow);
     }
-    if (req.body.favorites != null) {
-      req.user.favorites = req.body.favorites;
+    if ((req.body.unfollow != null) && req.user.following.indexOf(req.body.unfollow) >= 0) {
+      req.user.following.splice(req.user.following.indexOf(req.body.unfollow), 1);
     }
-    if (req.body.editor != null) {
-      req.user.editor = req.body.editor;
+    if (req.body.favorite != null) {
+      req.user.favorites.push(req.body.favorite);
+    }
+    if ((req.body.unfavorite != null) && req.user.favorites.indexOf(req.body.unfavorite) >= 0) {
+      req.user.favorites.splice(req.user.favorites.indexOf(req.body.unfavorite), 1);
+    }
+    if (req.body.edit != null) {
+      req.user.editor.push(req.body.edit);
+    }
+    if ((req.body.unedit != null) && req.user.editor.indexOf(req.body.unedit) >= 0) {
+      req.user.editor.splice(req.user.editor.indexOf(req.body.unedit), 1);
     }
     req.user.save();
     return res.json(publiclyViewableUser(req.user));
@@ -594,6 +628,8 @@ app.post('/stream', function(req, res) {
         picture: req.body.picture
       });
       newStream.save();
+      req.user.owner.push(newStream._id);
+      req.user.save();
       return res.json(newStream);
     } else {
       return res.json();
@@ -640,7 +676,7 @@ app.post('/point', function(req, res) {
     return Stream.findOne({
       _id: req.query.stream
     }, function(err, stream) {
-      var newPoint;
+      var listener, newPoint, _i, _len, _ref, _ref1;
       if (stream != null) {
         newPoint = new Point({
           value: req.body.value,
@@ -650,6 +686,13 @@ app.post('/point', function(req, res) {
           creator: req.user._id
         });
         newPoint.save();
+        if (((_ref = listeners[stream._id]) != null ? _ref.length : void 0) != null) {
+          _ref1 = listeners[stream._id];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            listener = _ref1[_i];
+            listener.emit('newData', newPoint);
+          }
+        }
         return res.json(newPoint);
       } else {
         return res.json();
