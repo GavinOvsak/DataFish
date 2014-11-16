@@ -274,13 +274,13 @@ app.get('/', function(req, res) {
   if (req.user != null) {
     return res.redirect('/dashboard');
   } else {
-    return res.render('home');
+    return res.render('home.html');
   }
 });
 
 app.get('/dashboard', function(req, res) {
   if (req.user != null) {
-    return res.render('dash');
+    return res.render('dash.html');
   } else {
     return res.redirect('/');
   }

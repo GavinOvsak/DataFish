@@ -229,16 +229,17 @@ app.get('/bypasshome', (req, res) ->
 
 app.get('/', (req, res) ->
 #  console.log(req.user)
+  #res.sendfile(__dirname + '/public/home.ejs')
   if req.user?
     res.redirect('/dashboard')
   else
-    res.render('home')
+    res.render('home.html')
 )
 
 app.get('/dashboard', (req, res) ->
   #Verify logged in, or redirect to home
   if req.user?
-    res.render('dash')
+    res.render('dash.html')
   else
     res.redirect('/')
 )
