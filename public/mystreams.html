@@ -246,7 +246,7 @@
           
           console.log($scope.users);
           
-          $scope.streams = $scope.users.following;
+          $scope.mine = $scope.users.owner;
           for (var j = 0; j < $scope.users.owner.length; j ++) {
             $scope.streams.push($scope.users.owner[j]);
           }
