@@ -69,23 +69,42 @@
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+            <div class="navbar-right collapse navbar-collapse navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
                     <li class="hidden">
                         <a href="#page-top"></a>
                     </li>
-                    <li id="new-stream">
-                        <a href="#">New Stream</a>
+
+                    <li id="following">
+                        <a href="/explore">Explore</a>
                     </li>
+                    <li id="following">
+                        <a href="/following">Following</a>
+                    </li>
+                    <li id="favorites">
+                        <a href="/mystreams">My Streams</a>
+                    </li>
+                    <!--li id="search" class="search">
+                        
+
+                           <input ng-model="query" id="logEmail" type="text" placeholder="Search" />
+                           <span class="input-group-btn">
+                                <button type="submit" class="btn"><span class="fui-search"></span></button>
+                            </span>    
+                        
+                    </li--> <!--Search: (outside brackets) input ng-model="query" type="text"/-->
+                   
                     <li id="new-datapoint">
-                        <a href="#">New Datapoint</a>
+                        <a href="#newBubbleModal" data-toggle="modal" data-target="#newBubbleModal">New Databubble</a>
                     </li>
-                    <li id="options">
-                        <a href="#">Username</a>
+                    <li id="options" >
+                        <a href="#">{{users.name}} <i class="fa fa-angle-down"></i></a>
                         <ul class="subnav">
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Board</a></li>
+                            <li><a href="/account">Profile</a></li>
+                             <li id="new-stream">
+                                <a href="#newStreamModal" data-toggle="modal" data-target="#newStreamModal">New Stream</a>
+                            </li>
                             <li><a href="/logout">Logout</a></li>
                         </ul>
                     </li>
