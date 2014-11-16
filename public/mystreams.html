@@ -241,10 +241,11 @@
       
       app.controller('UserCtrl', function($scope, $http){
         
-        $http.get('/user?id=54681fb90d0903a9637f25f7').success(function(data) {
+        $http.get('/user').success(function(data) {
           $scope.users = data;
           
           console.log($scope.users);
+          console.log("test");
           
           $scope.following = $scope.users.following;
           $scope.owner = $scope.users.owner;
@@ -260,8 +261,8 @@
             }; })(i))
           }
 
-          for (i = 0; i < $scope.following.length; i++) {
-            console.log($scope.following[i]);
+          for (i = 0; i < $scope.owner.length; i++) {
+            console.log($scope.owner[i]);
 
             
             //(function(i){return function(data) {}; })(i)

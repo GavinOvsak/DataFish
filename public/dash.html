@@ -43,10 +43,10 @@
                     </li>
 
                     <li id="following">
-                        <a href="#">Following</a>
+                        <a href="/following">Following</a>
                     </li>
                     <li id="favorites">
-                        <a href="#">My Streams</a>
+                        <a href="/mystreams">My Streams</a>
                     </li>
                     <!--li id="search" class="search">
                         
@@ -240,7 +240,7 @@
       
       app.controller('UserCtrl', function($scope, $http){
         
-        $http.get('/user?id=54681fb90d0903a9637f25f7').success(function(data) {
+        $http.get('/user').success(function(data) {
           $scope.users = data;
           
           console.log($scope.users);
