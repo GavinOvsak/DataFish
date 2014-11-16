@@ -17,10 +17,12 @@ db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', ->
   console.log('Connected to the database!')
+  ###
   User.find({}, (err, users)->
     console.log('All users: ')
     console.log(users)
   )
+  ###
   Stream.find({}, (err, streams)->
     console.log('All streams: ')
     console.log(streams)
@@ -62,8 +64,8 @@ Stream_Schema = mongoose.Schema({
   name: String,
   unit: String,
   genre: String,
+  tags: Array,
   description: String,
-  points: [],
   website: String,
   picture: String,
   average: Number,
@@ -75,12 +77,14 @@ Stream = mongoose.model('Stream', Stream_Schema)
 Point_Schema = mongoose.Schema({
   name: Number,
   source: String,
+  stream_id: String,
   time: String, #date
   created: String, #date
-  creator: Number #creater id
+  creator: String #creater id
 });
 
 Point = mongoose.model('Point', Point_Schema)
+#Point.remove({},->)
 
 #User.remove({email: 'test'}, ->)
 if false
@@ -123,7 +127,6 @@ if false
     name: 'Durham Temp',
     genre: 'Weather',
     description: '',
-    points: [],
     website: '',
     picture: '',
     average: 0,
@@ -223,10 +226,10 @@ app.post('/register', (req, res) ->
 )
 
 app.get('/bypassdash', (req, res) ->
-  res.render('dash')
+  res.render('dash.html')
 )
 app.get('/bypasshome', (req, res) ->
-  res.render('home')
+  res.render('home.html')
 )
 
 app.get('/', (req, res) ->
@@ -245,6 +248,27 @@ app.get('/dashboard', (req, res) ->
   else
     console.log('not logged in')
     res.redirect('/')
+)
+
+app.get('/account', (req, res) ->
+  #Verify logged in, or redirect to home
+  if req.user?
+    res.render('account.html')
+  else
+    console.log('not logged in')
+    res.redirect('/')
+)
+
+app.get('/streamPage', (req, res) ->
+  res.render('stream.html')
+)
+
+app.get('/searchPage', (req, res) ->
+  res.render('search.html')
+)
+
+app.get('/userPage', (req, res) ->
+  res.render('user.html')
 )
 
 app.get('/getToken', (req, res) ->
@@ -282,14 +306,35 @@ publiclyViewableUser = (user) ->
     editor: user.editor
   }
 
+listeners = {
+#  '<streamid>': [sockets]
+}
+
 io.sockets.on 'connection', (socket) ->
   socket.on 'listen', (data) ->
-    console.log(['listen', data])
+    #add them to a list of people to be notified when a stream gets updated
+    if data.streams?
+      for stream in data.streams
+        unless listeners[stream]?
+          listeners[stream] = []
+        listeners[stream].push(socket)
+
+    console.log(listeners)
+
+    socket.on('disconnect', ->
+      if data.streams?
+        for stream in data.streams
+          listeners[stream].splice(listeners[stream].indexOf(socket), 1)
+      console.log(listeners)
+    )
 
   socket.on 'update', (data) ->
-    console.log(['update', data])
+    #update the streams with new points
+    #find out which clients to tell
+    #console.log(['update', data])
 
-  socket.emit('newData', {'hey': 'world'})
+    #Tell all clients about the new data for their stream.
+    socket.emit('newData', {'hey': 'world'})
 
 app.get('/user', (req, res) ->
 #if req.query.id != null
@@ -320,10 +365,16 @@ app.get('/hack/allStreams', (req, res) ->
   )
 )
 
+app.get('/hack/allPoints', (req, res) ->
+  Point.find({}, (err, points) ->
+    res.json(points)
+  )
+)
+
 app.post('/user', (req, res) ->
   #check if authenticated
-  console.log(req.body)
-  if req.query.key? and req.query.id? or false #Need to allow website integration
+  #console.log(req.body)
+  if req.query.key? and req.query.id?
     Client.findOne({_id: req.query.key}, (err, client) ->
       console.log(err) if err?
       if client? and client.user_id is req.query.id
@@ -351,12 +402,29 @@ app.post('/user', (req, res) ->
       else
         res.json([client, "id doesn't match key"])
     )
+  else if req.user?
+    req.user.name = req.body.name if req.body.name?
+    req.user.email = req.body.email if req.body.email?
+    req.user.level = req.body.level if req.body.level?
+    req.user.picture = req.body.picture if req.body.picture?
+    req.user.bio = req.body.bio if req.body.bio?
+    req.user.isVerified = req.body.isVerified if req.body.isVerified?
+
+    #if req.body.password?, encrypt
+
+    req.user.following = req.body.following if req.body.following?
+    req.user.favorites = req.body.favorites if req.body.favorites?
+    req.user.editor = req.body.editor if req.body.editor?
+
+    req.user.save()
+    res.json(publiclyViewableUser(req.user))
   else
     res.json('You are not authenticated')
+
 )
 
 app.delete('/user', (req, res) ->
-
+  req.user.remove()
 )
 
 app.get('/stream', (req, res) ->
@@ -364,7 +432,17 @@ app.get('/stream', (req, res) ->
     Stream.findOne({'_id': req.query.id}, (err, stream) ->
       console.log(err) if err?
       if stream?
-        res.json(stream)
+        Point.find({stream_id: stream._id}, (err, points) ->
+          result = {
+            name: stream.name,
+            genre: stream.genre,
+            tags: stream.tags,
+            _id: stream._id,
+            points: points
+          }
+          res.json(result)
+        )
+        #Get all points on this stream
       else
         res.json()
     )
@@ -373,19 +451,57 @@ app.get('/stream', (req, res) ->
 )
 
 app.post('/stream', (req, res) ->
-  
+  if req.user?
+    #Need to check if you have the rights to do this.
+    if req.query.id? and req.body?
+      Stream.findOne({_id: req.query.id}, (err, stream) ->
+        console.log(err) if err?
+        if stream?
+          stream.name = req.body.name if req.body.name?
+          stream.genre = req.body.genre if req.body.genre?
+          stream.description = req.body.description if req.body.description?
+          stream.website = req.body.website if req.body.website?
+          stream.tags = req.body.tags if req.body.tags?
+          stream.picture = req.body.picture if req.body.picture?
+          stream.subscriptions = req.body.subscriptions if req.body.subscriptions?
+        else
+          res.json()
+      )
+    else if req.body.name?
+      newStream = new Stream({
+        name: req.body.name,
+        genre: req.body.genre,
+        description: req.body.description,
+        tags: req.body.tags,
+        website: req.body.website,
+        picture: req.body.picture
+      })
+      newStream.save()
+      res.json(newStream)
+    else
+      res.json()
+  else
+    res.json('You are not authenticated')
+  #make a new stream if you don't give it an id.
+  #Changing stream properties
 )
 
 app.delete('/stream', (req, res) ->
-  
+  if req.user? and req.query.id?
+    #Need to check if you have the rights to do this.
+    Stream.remove({_id: req.query.id}, (err, stream) ->
+      res.json(stream)
+    )
+  else
+    res.json()
 )
 
 app.get('/point', (req, res) ->
   if req.query.id? and req.query.stream? 
-    Point.findOne({'_id': req.query.id, 'stream': req.query.stream}, (err, stream) ->
+    Point.findOne({'_id': req.query.id, 'stream': req.query.stream}, (err, point) ->
       console.log(err) if err?
-      if stream?
-        res.json(stream)
+      if point?
+        res.json(point)
       else
         res.json()
     )
@@ -393,13 +509,35 @@ app.get('/point', (req, res) ->
     res.json(null)
 )
 
-app.post('/point', (req, res) ->
-  
+app.post('/point', (req, res) -> 
+  #Adding a new point to the stream.
+  if req.user? and req.query.stream? and req.body.value? and req.body.time? and req.body.source?
+    Stream.findOne({_id: req.query.stream}, (err, stream) ->
+      if stream?
+        newPoint = new Point({
+          value: req.body.value,
+          time: req.body.time,
+          stream_id: stream._id,
+          source: req.body.source,
+          creator: req.user._id
+        })
+        newPoint.save()
+        res.json(newPoint)
+        #Make point and say it is for the stream
+      else
+        res.json()
+    )
+  else
+    res.json()
 )
 
 app.delete('/point', (req, res) ->
-  
-)
+  if req.user? and req.query.id?
+    Point.remove({_id: req.query.id}, (err, points) ->
+      res.json(points)
+    )
+  else
+    res.json())
 
 
 

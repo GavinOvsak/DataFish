@@ -99,6 +99,21 @@
     <script class="cssdeck" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script src="js/jquery-1.10.2.js"></script>
     <script src="js/bootstrap.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect();
+        socket.on('newData', function(data) {
+            console.log(data);
+        })
+        socket.emit('listen', {streams: ['546800481c9771e048ae1826']});
+        socket.emit('update', {
+            key: '5467fae1b1ba4ec34659b8b3', 
+            point: {
+                stream: '546800481c9771e048ae1826',
+                value: 20
+            }
+        });
+    </script>
     <script>
     (function( $ ) {
 
