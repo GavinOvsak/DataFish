@@ -371,6 +371,7 @@ a {
 
 h1, h2, h3 {
     font-family: 'Ubuntu', sans-serif;
+    color:rgb(255,255,255);
 }
 h3 {
   font-size: 3.5em;
@@ -820,7 +821,7 @@ i.scroll:hover {
   background-color: none;
   /*border: 1px solid #CDF76F;*/
   margin: 25px auto;
-  width: 500px;
+  width: 90%;
   height: 200px;
   position: relative;
   color:#6A94D4;
@@ -872,7 +873,7 @@ i.scroll:hover {
   text-align: center;
   vertical-align: middle;
   color: #CDF76F;
-  font-size: 30px;
+  font-size: 25px;
   position: relative;
   top: 50%;
   transform: translateY(-50%);
@@ -881,7 +882,7 @@ span { display:inline-block; vertical-align:middle; top-margin:20px; float: cent
 
 .card-follow{
   text-align: right;
-  padding-left: 30px;
+  padding-left: 10%;
   vertical-align: middle;
 }
 
