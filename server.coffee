@@ -485,6 +485,7 @@ app.get('/stream', (req, res) ->
           result = {
             name: stream.name,
             genre: stream.genre,
+            description: stream.description,
             tags: stream.tags,
             _id: stream._id,
             unit: stream.unit,
