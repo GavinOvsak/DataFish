@@ -43,10 +43,13 @@
                     </li>
 
                     <li id="following">
-                        <a href="#">Following</a>
+                        <a href="/explore">Explore</a>
+                    </li>
+                    <li id="following">
+                        <a href="/following">Following</a>
                     </li>
                     <li id="favorites">
-                        <a href="#">My Streams</a>
+                        <a href="/mystreams">My Streams</a>
                     </li>
                     <!--li id="search" class="search">
                         
@@ -57,9 +60,7 @@
                             </span>    
                         
                     </li--> <!--Search: (outside brackets) input ng-model="query" type="text"/-->
-                    <li id="new-stream">
-                        <a href="#newStreamModal" data-toggle="modal" data-target="#newStreamModal">New Stream</a>
-                    </li>
+                   
                     <li id="new-datapoint">
                         <a href="#newBubbleModal" data-toggle="modal" data-target="#newBubbleModal">New Databubble</a>
                     </li>
@@ -67,6 +68,9 @@
                         <a href="#">{{users.name}} <i class="fa fa-angle-down"></i></a>
                         <ul class="subnav">
                             <li><a href="/account">Profile</a></li>
+                             <li id="new-stream">
+                                <a href="#newStreamModal" data-toggle="modal" data-target="#newStreamModal">New Stream</a>
+                            </li>
                             <li><a href="/logout">Logout</a></li>
                         </ul>
                     </li>
@@ -275,9 +279,9 @@
                 $scope.bubbles[streamid] = data;
                 console.log('bubbles update');
                 console.log(streamid);
-                console.log($scope.bubbles);
+                console.log($scope.bubbles[streamid]);
                 $scope.bubbles[streamid].recent = data.points[data.points.length-1];
-                console.log(data.points[data.points.length-1]);
+                console.log($scope.bubbles[streamid].recent);
 
 
                 if ($scope.bubbles[streamid].genre == 'health') {
