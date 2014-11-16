@@ -4,11 +4,11 @@
 
 
 <!-- Load c3.css -->
-<link href="/js/cs-0.4.1/c3.css" rel="stylesheet" type="text/css">
+<link href="/js/c3-0.4.1/c3.css" rel="stylesheet" type="text/css">
 
 <!-- Load d3.js and c3.js -->
-<script src="/js/d3.v3.min.js" charset="utf-8"></script>
-<script src="/js/c3-0.41/c3.min.js"></script>
+<script src="/js/d3-master/d3.v3.min.js" charset="utf-8"></script>
+<script src="/js/c3-0.4.1/c3.min.js"></script>
 
 <head>
     <meta charset="utf-8">
@@ -72,10 +72,6 @@
                             <li><a href="/logout">Logout</a></li>
                         </ul>
                     </li>
-                 
-            
-               
-                
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -107,9 +103,9 @@
 
                 <div class="row col-md-4 card-unit">Friendship and things</div>
                 <div class="row col-md-8 card-value">
-
                 <div id="chart"></div>
-                <script type="text/javascript" src="/js/c3-0.4.1.js">
+                <script type="text/javascript" src="/js/c3-0.4.1.js"/>
+                <script>
                     var chart = c3.generate({
                         bindto: '#chart',
                         data: {
