@@ -220,10 +220,27 @@ app.post('/register', (req, res) ->
     res.json('Not enough info (name, email, password)')
 )
 
+app.get('/bypassdash', (req, res) ->
+  res.render('dash')
+)
+app.get('/bypasshome', (req, res) ->
+  res.render('home')
+)
+
 app.get('/', (req, res) ->
 #  console.log(req.user)
-  res.render('home')
-#  res.json('nope')
+  if req.user?
+    res.redirect('/dashboard')
+  else
+    res.render('home')
+)
+
+app.get('/dashboard', (req, res) ->
+  #Verify logged in, or redirect to home
+  if req.user?
+    res.render('dash')
+  else
+    res.redirect('/')
 )
 
 app.get('/getToken', (req, res) ->

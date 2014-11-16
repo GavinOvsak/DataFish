@@ -13,23 +13,18 @@
     <link href="css/bootstrap.css" rel="stylesheet">
 
     <!-- Add custom CSS here -->
-  <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
     <link href="css/stylish-portfolio.css" rel="stylesheet">
     <!--link href="css/flat-ui.css" rel="stylesheet"-->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
-  
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-custom">
-
-
       <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header page-scroll">
-               
                 <img src="img/logo.png">
             </div>
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
@@ -37,14 +32,12 @@
                     <li class="hidden">
                         <a href="#page-top"></a>
                     </li>
-               
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container -->
     </nav>
-  
     <video autoplay loop poster="img/fish.jpg" id="bgvid">
         <!--source src="polina.webm" type="video/webm"-->
         <source src="img/FishyVideo.mp4" type="video/mp4">
@@ -75,26 +68,26 @@
                 <div id="login" class="form-action show">
                     <form>
 
-                                <input type="text" placeholder="Email" />
-                                <input type="password" placeholder="Password" />
-                                <input type="submit" value="Submit" class="button" />
+                                <input id="logEmail" type="text" placeholder="Email" />
+                                <input id="logPassword" type="password" placeholder="Password" />
+                                <input id="logSubmit" type="submit" value="Submit" class="button" />
                           
                     </form>
                 </div>
                 <!--/#login.form-action-->
                 <div id="register" class="form-action hide">
                     <form>
-                                <input type="text" placeholder="Name" />
-                                <input type="text" placeholder="Email" />
-                                <input type="password" placeholder="Password" />
-                                <input type="submit" value="Sign Up" class="button" />
+                                <input id="regName" type="text" placeholder="Name" />
+                                <input id="regEmail" type="text" placeholder="Email" />
+                                <input id="regPassword" type="password" placeholder="Password" />
+                                <input id="regSubmit" type="submit" value="Sign Up" class="button" />
                     </form>
                 </div>
                 <!--/#register.form-action-->
                 <div id="reset" class="form-action hide">
                     <form>
-                                <input type="text" placeholder="Email" />
-                                <input type="submit" value="Send" class="button" />
+                                <input id="resetEmail" type="text" placeholder="Email" />
+                                <input id="resetSubmit" type="submit" value="Send" class="button" />
                     </form>
                 </div>
                 <!--/#register.form-action-->
@@ -108,6 +101,31 @@
     <script src="js/bootstrap.js"></script>
     <script>
     (function( $ ) {
+
+        $('#logSubmit').click(function() {
+            $.post('/login', {
+                email: $('#logEmail').val(),
+                password: $('#logPassword').val()
+            }, function(data) {
+                console.log('Results')
+                console.log(arguments)
+                //window.location = '/dashboard'
+            });
+        });
+
+        $('#regSubmit').click(function() {
+            $.post('/register', {
+                name: $('#regName').val(),
+                email: $('#regEmail').val(),
+                password: $('#regPassword').val()
+            }, function(data) {
+                console.log(data)
+                //window.location = '/dashboard'
+            });
+        });
+
+
+
       // constants
       var SHOW_CLASS = 'show',
           HIDE_CLASS = 'hide',
