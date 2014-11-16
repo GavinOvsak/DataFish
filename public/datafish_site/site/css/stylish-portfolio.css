@@ -152,6 +152,11 @@ video#bgvid {
   background-size: cover;
 }
 
+.header {
+  background-color: #6A94D4;
+  background: #6A94D4;
+}
+
 
 /* Title */
 
