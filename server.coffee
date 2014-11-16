@@ -129,6 +129,7 @@ if false
   newStream = new Stream({
     name: 'Durham Temp',
     genre: 'Weather',
+    unit: 'C',
     description: '',
     website: '',
     picture: '',
@@ -486,6 +487,7 @@ app.get('/stream', (req, res) ->
             genre: stream.genre,
             tags: stream.tags,
             _id: stream._id,
+            unit: stream.unit,
             latestValue: stream.latestValue,
             latestTime: stream.latestTime,
             points: points
