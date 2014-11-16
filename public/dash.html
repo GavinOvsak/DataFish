@@ -43,17 +43,7 @@
 
 <body id="page-top" class="header" data-spy="scroll" data-target=".navbar-custom">
 
-<div id="fb-root"></div>
-<!--
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
--->
-      <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
@@ -70,10 +60,10 @@
                         <a href="#page-top"></a>
                     </li>
                     <li id="new-stream">
-                        <a href="#">New Stream</a>
+                        <a href="#newStreamModal" data-toggle="modal" data-target="#newStreamModal">New Stream</a>
                     </li>
                     <li id="new-datapoint">
-                        <a href="#">New Datapoint</a>
+                        <a href="#">New Databubble</a>
                     </li>
                     <li id="options">
                         <a href="#">Username</a>
@@ -83,17 +73,32 @@
                             <li><a href="/logout">Logout</a></li>
                         </ul>
                     </li>
-                 
-            
-               
-                
             </div>
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container -->
     </nav>
+    
+
 
     <div id="top" class="dash container">
+        <div id="newStreamModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Create New Data Stream</h3>
+            </div>
+            <div class="modal-body">
+                <p>To request a resume or get in touch, you can write me a message here. Alternatively, you can contact me through <a href="https://plus.google.com/108127518601412327477" target="_blank">Google+</a>, <a href="https://www.facebook.com/ramen.forever" target="_blank">Facebook</a>, or <a href="https://www.linkedin.com/profile/view?id=116646100" target="_blank">LinkedIn</a>. Hope to hear from you! Be sure to let me know how best to reach you.</p>
+                <textarea placeholder="Message" name="entry.437456649" rows= "8" cols= "0" class= "ss-q-long" id= "entry_437456649" dir= "auto" style= "resize:vertical;width:90%;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <input class="btn btn-primary" aria-hidden="true" type= "submit" onclick="$('#newStreamModal').modal('hide')" name= "submit" value="Create" id= "ss-submit">
+            </div>
+        </div>
+        <script type="text/javascript">
+            $('#newStreamModal').modal()
+        </script>
        <h1>Stream</h1>
        <div class="row col-md-4 col-xs-4">
            <div class="flat-card">
@@ -244,12 +249,13 @@
             console.log(data);
         })
         socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
-        socket.emit('update', {
+        
+        /*socket.emit('update', {
             stream: '546853c0f48b87e385ddf7fd',
             value: 20,
             time: '100000',
             source: 'Me'
-        });
+        });*/
         //post login to /login
         //post register to /register
         //post forgot to /forgot
