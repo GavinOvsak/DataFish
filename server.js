@@ -262,8 +262,28 @@ app.post('/register', function(req, res) {
   }
 });
 
-app.get('/', function(req, res) {
+app.get('/bypassdash', function(req, res) {
+  return res.render('dash');
+});
+
+app.get('/bypasshome', function(req, res) {
   return res.render('home');
+});
+
+app.get('/', function(req, res) {
+  if (req.user != null) {
+    return res.redirect('/dashboard');
+  } else {
+    return res.render('home');
+  }
+});
+
+app.get('/dashboard', function(req, res) {
+  if (req.user != null) {
+    return res.render('dash');
+  } else {
+    return res.redirect('/');
+  }
 });
 
 app.get('/getToken', function(req, res) {
