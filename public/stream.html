@@ -2,6 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
+<!-- Load c3.css -->
+<link href="/js/cs-0.41/c3.css" rel="stylesheet" type="text/css">
+
+<!-- Load d3.js and c3.js -->
+<script src="/js/d3-master/d3.v3.min.js" charset="utf-8"></script>
+<script src="/js/cs-0.41/c3.min.js"></script>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,7 +48,7 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
                     <i class="fa fa-bars"></i>
                 </button>
-                <img src="img/logo.png">
+                <a href="/dashboard"><img src="img/logo.png"></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -78,19 +86,47 @@
        <h1>Flow Title</h1>
        <div class="stream">
             <div class="stream-info">
+                <div class="row">
+                <div class="col-md-4">Category:</div>
+                <div class="col-md-8">Tags:</div>
+                </div>
                 <div class="row col-md-offset-1 col-md-3 card-genre">icon</div>
-                <div class="row col-md-5 card-title">
-                    title of card
+                <div class="row col-md-5 description">
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 </div>
                 <div class="row col-md-offset-1 col-md-2 card-follow">Follow</div>
             </div>
             <div class="stream-graph">
-                <div class="row col-md-8 card-value">EPIC GRAPH</div>
+            <div class="row">
+                <div class="col-md-1">test 1</div>
+                <div class="col-md-1">test 1</div>
+                <div class="col-md-1">test 1</div>
+                <div class="col-md-1">test 1</div>
+                <div class="col-md-1">test 1</div>
+            </div>
+
                 <div class="row col-md-4 card-unit">Friendship and things</div>
+                <div class="row col-md-8 card-value">
+                <script type="text/javascript" src="/js/awesomeGraph.js">
+                    var chart = c3.generate({
+    bindto: '#chart',
+    data: {
+      columns: [
+        ['data1', 30, 200, 100, 400, 150, 250],
+        ['data2', 50, 20, 10, 40, 15, 25]
+      ]
+    }
+});
+                </script>
+
+
+
+
+                EPIC GRAPH</div>
             </div>
             <div class="stream-footer">
                 <div class="col-md-offset-1 row col-md-5 card-date">11-16-14</div>
-                <div class="col-md-offset-1 row col-md-5 card-star">star</div>
+                <div class="col-md-offset-1 row col-md-5 card-star">Favorite</div>
             </div>
         </div>
     </div>
