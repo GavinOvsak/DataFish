@@ -568,6 +568,8 @@ app.get('/point', (req, res) ->
     res.json(null)
 )
 
+sendgrid  = require('sendgrid')('gavinovsak', 'remote01');
+
 app.post('/point', (req, res) -> 
   #Adding a new point to the stream.
   if req.user? and req.body.stream_id? and req.body.value? and req.body.time? and req.body.source?
@@ -587,6 +589,17 @@ app.post('/point', (req, res) ->
         if listeners[stream._id]?.length?
             for listener in listeners[stream._id]
               listener.emit('newData', newPoint)
+
+        sendgrid.send({
+          to:       req.user.email,
+          from:     'ovsak.gavin@gmail.com',
+          subject:  'Your data stream updated!',
+          text:     'New bubble about ' + stream.name + ': ' + req.body.value + ' ' + stream.unit + '. See more at http://datafish.nodejitsu.com'
+        }, (err, json) ->
+          if err? 
+            return console.error(err)
+          console.log(json);
+        );
         res.json(newPoint)
         #Make point and say it is for the stream
       else
