@@ -62,44 +62,13 @@
           </li>
 
           <li id="following">
-            <a href="/explore">Explore</a>
-          </li>
-          <li id="following">
-            <a href="/dashboard">Following</a>
-          </li>
-          <li id="favorites">
-            <a href="/mystreams">My Streams</a>
-          </li>
-          <!--li id="search" class="search">
-              
-
-           <input ng-model="query" id="logEmail" type="text" placeholder="Search" />
-           <span class="input-group-btn">
-                <button type="submit" class="btn"><span class="fui-search"></span></button>
-            </span>    
-        
-          </li--> <!--Search: (outside brackets) input ng-model="query" type="text"/-->
-
-          <li id="new-datapoint">
-            <a href="#newBubbleModal" data-toggle="modal" data-target="#newBubbleModal">New Databubble</a>
-          </li>
-          <li id="options" >
-            <a href="#">{{users.name}} <i class="fa fa-angle-down"></i></a>
-            <ul class="subnav">
-              <li><a href="/account">Profile</a></li>
-              <li id="new-stream">
-                <a href="#newStreamModal" data-toggle="modal" data-target="#newStreamModal">New Stream</a>
-              </li>
-              <li><a href="/logout">Logout</a></li>
-            </ul>
+            <a href="/">Sign In</a>
           </li>
         </div>
         <!-- /.navbar-collapse -->
       </div>
       <!-- /.container -->
     </nav>
-
-
 
     <div id="top" class="dash container">
      <div class="stream">
@@ -114,8 +83,8 @@
           <!--a ng-href="/streamPage?id={{stream}}"></a--> <!-- Edit this for specific title -->
         </div>
         <div class="row col-md-2 card-follow">
-          <a style="text-decoration: none;">
-            <p align="right" ng-click="toggleFollow()" style="color:white;font-size:30px;padding-top:20px">{{following.indexOf(id) >= 0 && '- Unfollow' || '+ Follow'}}</p> <!-- Edit this if not a plus sign -->
+          <a href="/" style="text-decoration: none;">
+            <p align="right" style="color:white;font-size:30px;padding-top:20px">+ Follow</p> <!-- Edit this if not a plus sign -->
           </a>
         </div>
       <!--div class="row col-md-offset-1 col-md-3 card-genre">icon</div>
@@ -147,127 +116,72 @@
     var app = angular.module('userApp', []);
     var chart;
 
-    function getParameterByName(name) {
-      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-      results = regex.exec(location.search);
-      return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
-
     app.controller('UserCtrl', function($scope, $http){
 
-      $http.get('/user').success(function(data) {
-        $scope.user = data;
-        console.log($scope.user);
-
-        if ($scope.user != "null") {
-          $scope.owner = $scope.user.owner;
-          $scope.following = $scope.user.following;
-
-              /*for (var j = 0; j < $scope.user.owner.length; j ++) {
-                $scope.following.push($scope.user.owner[j]);
-              }*/
-
-  //          console.log($scope.owner)
-          $scope.ownerObjs = [];
-
-          $scope.id = getParameterByName('id');
-          console.log($scope.following.indexOf($scope.id))
-
-          $scope.toggleFollow = function() {
-            if ($scope.following.indexOf($scope.id) >= 0) {
-                console.log('unfollow: ' + $scope.id);
-                $.post('/user', {
-                    unfollow: $scope.id
-                })
-                $('#follow').text('+ Follow');
-                $scope.following.splice($scope.following.indexOf($scope.id),1);
-            } else {
-                console.log('follow: ' + $scope.id);
-                $.post('/user', {
-                    follow: $scope.id
-                })
-                $('#follow').text('- Unfollow');
-                $scope.following.push($scope.id);
-            }
-          }
+      $http.get('/hack/allStreams').success(function(data) {
+        $scope.all = data;
+        //console.log($scope.all);
+        for (i = 0; i < $scope.all.length; i++) {
+          //console.log($scope.all[i]);
+          //(function(i){return function(data) {}; })(i)
           
-          /*for (i = 0; i < $scope.owner.length; i++) {
-            $http.get('/stream?id=' + $scope.owner[i]).success((function(i){return function(data) {
-              if (data != '') {
-                //$scope.ownerObjs.push(data);
-                // console.log('Owner Objs:')
-                // console.log($scope.owner[i])
-                // console.log(data)
-                // console.log($scope.ownerObjs)
-              //                      console.log(data.latestValue)
-              }
-            };})(i));
-          }*/
-
-          /*$http.get('/hack/allStreams').success(function(data) {
-            $scope.all = data;
-            //console.log($scope.all);
-            for (i = 0; i < $scope.all.length; i++) {
-              //console.log($scope.all[i]);
-              //(function(i){return function(data) {}; })(i)
-              
-              $scope.bubbles = {};
-              $http.get('/stream?id=' + $scope.all[i]._id).success((function(i){return function(data) {
-                var streamid = $scope.all[i]._id;
-              //  console.log(data)
-                $scope.bubbles[streamid] = data;
-                latest = 0;
-                if (data.latestValue != null) {
-                  latest = data.latestValue;
-                }
-                $scope.bubbles[streamid].recent = latest;
-                //console.log(data.latestValue);
-
-                if ($scope.bubbles[streamid].genre == 'health') {
-                  $scope.bubbles[streamid].genreSrc = "/img/Health.png";
-                  
-                } else if ($scope.bubbles[streamid].genre == 'finance') {
-                  $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
-
-                } else if ($scope.bubbles[streamid].genre == 'environment') {
-                  $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
-
-                } else if ($scope.bubbles[streamid].genre == 'politics') {
-                  $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
-
-                } else if ($scope.bubbles[streamid].genre == 'sports') {
-                  $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
-
-                } else if ($scope.bubbles[streamid].genre == 'tv') {
-                  $scope.bubbles[streamid].genreSrc = "/img/TV.png";
-
-                } else if ($scope.bubbles[streamid].genre == 'energy') {
-                  $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
-
-                } else if ($scope.bubbles[streamid].genre == 'education') {
-                  $scope.bubbles[streamid].genreSrc = "/img/Education.png";
-
-                } else if ($scope.bubbles[streamid].genre == 'business') {
-                  $scope.bubbles[streamid].genreSrc = "/img/Business.png";
-
-                } else if ($scope.bubbles[streamid].genre == 'inequality') {
-                  $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
-
-                }
-
-              }; })(i));
+          $scope.bubbles = {};
+          $http.get('/stream?id=' + $scope.all[i]._id).success((function(i){return function(data) {
+            var streamid = $scope.all[i]._id;
+          //  console.log(data)
+            $scope.bubbles[streamid] = data;
+            latest = 0;
+            if (data.latestValue != null) {
+              latest = data.latestValue;
             }
-          });*/
-          //console.log($scope.bubbles)
+            $scope.bubbles[streamid].recent = latest;
+            //console.log(data.latestValue);
+
+            if ($scope.bubbles[streamid].genre == 'health') {
+              $scope.bubbles[streamid].genreSrc = "/img/Health.png";
+              
+            } else if ($scope.bubbles[streamid].genre == 'finance') {
+              $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
+
+            } else if ($scope.bubbles[streamid].genre == 'environment') {
+              $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
+
+            } else if ($scope.bubbles[streamid].genre == 'politics') {
+              $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
+
+            } else if ($scope.bubbles[streamid].genre == 'sports') {
+              $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
+
+            } else if ($scope.bubbles[streamid].genre == 'tv') {
+              $scope.bubbles[streamid].genreSrc = "/img/TV.png";
+
+            } else if ($scope.bubbles[streamid].genre == 'energy') {
+              $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
+
+            } else if ($scope.bubbles[streamid].genre == 'education') {
+              $scope.bubbles[streamid].genreSrc = "/img/Education.png";
+
+            } else if ($scope.bubbles[streamid].genre == 'business') {
+              $scope.bubbles[streamid].genreSrc = "/img/Business.png";
+
+            } else if ($scope.bubbles[streamid].genre == 'inequality') {
+              $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
+
+            }
+
+          }; })(i));
         }
       });
     });
 
-
-
     $(document).ready(function(){
-      
+      function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+
       console.log(getParameterByName('id'))
 
       $('#delete').click(function() {
@@ -373,17 +287,6 @@
       });
       google.load('visualization', '1', {'packages':['annotationchart']});
         
-
-      
-
-      // var description = getParameterByName('description')
-      // var picture = getParameterByName('picture')
-      // var points = getParameterByName('points')
-      // console.log("description is" + description)
-      // console.log("picture is" + picture)
-      // console.log("points is" + points)
-      // console.log(getParameterByName('name'))
-
     });
   </script>
 </body>

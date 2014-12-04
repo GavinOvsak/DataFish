@@ -21,6 +21,7 @@
 <!--    <script src="/js/jquery.fittext.js"></script>-->
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
     <link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
 </head>
 
 <body ng-app="userApp" ng-controller="UserCtrl" id="page-top" class="header" data-spy="scroll" data-target=".navbar-custom">
@@ -146,7 +147,7 @@
                     <div class="form-group">
                         <label for="dataStream">Stream:</label>
                         <select type="text" class="form-control" id="dataStream">
-                            <option ng-repeat="obj in ownerObjs" value="{{obj._id}}">{{obj.name}}</option>
+                            <option ng-repeat="obj in ownerStreams" value="{{obj._id}}">{{obj.name}}</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -174,14 +175,14 @@
         </div>
     </div>
 
-    <div  ng-app="userApp" ng-controller="UserCtrl">
+    <div>
         <div id="top" class="container dash">
             <!-- <script type="text/javascript">
                 $('#newStreamModal').modal()
             </script>-->
            <!--h1>Stream</h1-->
            <div class="placeholder"></div>
-           <div ng-repeat="stream in all" class="row col-md-4 col-xs-4">
+           <div ng-repeat="stream in all" ng-Cloak class="row col-md-4 col-xs-4">
                <div class="flat-card">
                     <div class="topbar">
 
@@ -195,10 +196,7 @@
                             <a ng-href="/streamPage?id={{stream._id}}">{{bubbles[stream._id].name}}</a> <!-- Edit this for specific title -->
                         </div>
                         <div class=" col-md-1 col-xs-offset-1 col-xs-1  col-xs-offset-1 card-follow">
-                            <a href="#about">
-                                <img align="right" src="img/PlusSign.png"> <!-- Edit this if not a plus sign -->
-                            </a>
-                            
+                            <a href="#follow" style="text-decoration: none;"><p align="right" style="color:white;font-size:30px;" ng-click="toggleFollow(stream._id)" id="follow" data-id="{{stream._id}}">{{bubbles[stream._id].isFollowing && '-' || '+' }}</p></a> <!-- Edit this if not a plus sign -->  
                         </div>
                     </div>
                     <div class="midbar">
@@ -217,7 +215,6 @@
 
 <!---      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>-->
     <script src="js/jquery-1.10.2.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
 
     <!--script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.14.2/TweenMax.min.js"></script-->
@@ -228,7 +225,6 @@
     <script src="/js/moment.js"></script>
     <script src="/js/bootstrap-datetimepicker.js"></script>
 
-
     <!-- Include jQuery -->
 <!--    <script src="javascripts/jquery.js"></script>-->
     <!-- Include the Sidr JS -->
@@ -238,85 +234,98 @@
       var app = angular.module('userApp', []);
       
       app.controller('UserCtrl', function($scope, $http){
-        
+        $scope.ownerStreams = [];
+        $scope.bubbles = {};
         $http.get('/user').success(function(data) {
-          $scope.users = data;
-          console.log($scope.users);
+            $scope.user = data;
+            console.log($scope.user);
+
+            $scope.following = $scope.user.following;
+            $scope.owner = $scope.user.owner;
+
+            /*for (var j = 0; j < $scope.user.owner.length; j ++) {
+            $scope.following.push($scope.user.owner[j]);
+            }*/
+
+            console.log($scope.following);
+            
+            $scope.toggleFollow = function(id) {
+                if ($scope.bubbles[id].isFollowing) {
+                    console.log('unfollow: ' + id);
+                    $.post('/user', {
+                        unfollow: id
+                    })
+                    $scope.bubbles[id].isFollowing = false;
+                } else {
+                    console.log('follow: ' + id);
+                    $.post('/user', {
+                        follow: id
+                    })
+                    $scope.bubbles[id].isFollowing = true;
+                }
+            };
           
-          $scope.owner = $scope.users.owner;
-
-          /*for (var j = 0; j < $scope.users.owner.length; j ++) {
-            $scope.following.push($scope.users.owner[j]);
-          }*/
-
-
-          console.log($scope.owner)
-          $scope.ownerObjs = [];
-          
-          for (i = 0; i < $scope.owner.length; i++) {
-            $http.get('/stream?id=' + $scope.owner[i]).success((function(i){return function(data) {
-                if (data != '') {
-                    $scope.ownerObjs.push(data);
-                      console.log('Owner Objs:')
-                      console.log($scope.owner[i])
-                      console.log(data)
-                      console.log($scope.ownerObjs)
-//                      console.log(data.latestValue)
-                  }
-            }; })(i))
-          }
+            for (i = 0; i < $scope.owner.length; i++) {
+                $http.get('/stream?id=' + $scope.owner[i]).success(function(data) {
+                    if (data != "null")
+                        $scope.ownerStreams.push(data);
+                });
+            }
 
             $http.get('/hack/allStreams').success(function(data) {
                 $scope.all = data;
                 console.log($scope.all);
                 for (i = 0; i < $scope.all.length; i++) {
-                    console.log($scope.all[i]);
+                    //console.log($scope.all[i]);
                     //(function(i){return function(data) {}; })(i)
                     
-                    $scope.bubbles = {};
+                    
                     $http.get('/stream?id=' + $scope.all[i]._id).success((function(i){return function(data) {
                         var streamid = $scope.all[i]._id;
-                        console.log(data)
-                        $scope.bubbles[streamid] = data;
-                        latest = 0;
-                        if (data.latestValue != null) {
-                            latest = data.latestValue;
-                        }
-                        $scope.bubbles[streamid].recent = latest;
-                        console.log(data.latestValue);
+                        //console.log(data)
+                        if (data != "null") {
+                            $scope.bubbles[streamid] = data;
+                            latest = 0;
+                            if (data.latestValue != null) {
+                                latest = data.latestValue;
+                            }
+                            $scope.bubbles[streamid].recent = latest;
+                            //console.log(data.latestValue);
 
-                        if ($scope.bubbles[streamid].genre == 'health') {
-                            $scope.bubbles[streamid].genreSrc = "/img/Health.png";
-                        
-                        } else if ($scope.bubbles[streamid].genre == 'finance') {
-                            $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
+                            if ($scope.bubbles[streamid].genre == 'health') {
+                                $scope.bubbles[streamid].genreSrc = "/img/Health.png";
                             
-                        } else if ($scope.bubbles[streamid].genre == 'environment') {
-                            $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
-                            
-                        } else if ($scope.bubbles[streamid].genre == 'politics') {
-                            $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
-                            
-                        } else if ($scope.bubbles[streamid].genre == 'sports') {
-                            $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
-                            
-                        } else if ($scope.bubbles[streamid].genre == 'tv') {
-                            $scope.bubbles[streamid].genreSrc = "/img/TV.png";
-                            
-                        } else if ($scope.bubbles[streamid].genre == 'energy') {
-                            $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
-                            
-                        } else if ($scope.bubbles[streamid].genre == 'education') {
-                            $scope.bubbles[streamid].genreSrc = "/img/Education.png";
-                            
-                        } else if ($scope.bubbles[streamid].genre == 'business') {
-                            $scope.bubbles[streamid].genreSrc = "/img/Business.png";
-                            
-                        } else if ($scope.bubbles[streamid].genre == 'inequality') {
-                            $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
-                           
+                            } else if ($scope.bubbles[streamid].genre == 'finance') {
+                                $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
+                                
+                            } else if ($scope.bubbles[streamid].genre == 'environment') {
+                                $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
+                                
+                            } else if ($scope.bubbles[streamid].genre == 'politics') {
+                                $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
+                                
+                            } else if ($scope.bubbles[streamid].genre == 'sports') {
+                                $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
+                                
+                            } else if ($scope.bubbles[streamid].genre == 'tv') {
+                                $scope.bubbles[streamid].genreSrc = "/img/TV.png";
+                                
+                            } else if ($scope.bubbles[streamid].genre == 'energy') {
+                                $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
+                                
+                            } else if ($scope.bubbles[streamid].genre == 'education') {
+                                $scope.bubbles[streamid].genreSrc = "/img/Education.png";
+                                
+                            } else if ($scope.bubbles[streamid].genre == 'business') {
+                                $scope.bubbles[streamid].genreSrc = "/img/Business.png";
+                                
+                            } else if ($scope.bubbles[streamid].genre == 'inequality') {
+                                $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
+                               
+                            }
                         }
 
+                        $scope.bubbles[streamid].isFollowing = $scope.following.indexOf(streamid) >= 0
                    }; })(i));
                 }
             });
@@ -329,7 +338,7 @@
       var app = angular.module('userApp', []);
       app.controller('UserCtrl', function($scope, $http){
         $http.get('/user').success(function(data) {
-          $scope.users = data;
+          $scope.user = data;
           console.log("working");
         });
       });
@@ -341,7 +350,7 @@
       var app = angular.module('userApp', []);
       app.controller('UserCtrl', function($scope, $http){
         $http.get('/user').success(function(data) {
-          $scope.users = data;
+          $scope.user = data;
           console.log("working");
         });
       });
@@ -358,6 +367,8 @@
             })
             socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
             
+            
+
             $('#dataTime').datetimepicker();
 
             $('#createStream').click(function(){
@@ -399,8 +410,7 @@
 
                 var time = 0;
                 //Need to fix up time
-                d = new Date($('#dataTime').val())
-                debugger
+                d = new Date($('#dataTime').val());
                 time = d.getTime();
                 // if ($('#now').checked()) {
                 //     time = Date.now();

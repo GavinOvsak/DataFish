@@ -146,7 +146,7 @@
                     <div class="form-group">
                         <label for="dataStream">Stream:</label>
                         <select type="text" class="form-control" id="dataStream">
-                            <option ng-repeat="obj in ownerObjs" value="{{obj._id}}">{{obj.name}}</option>
+                            <option ng-repeat="obj in ownerStreams" value="{{obj._id}}">{{obj.name}}</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -155,10 +155,10 @@
                     </div>
                     <div class="form-group">
                         <label for="dataTime">Data Time:</label>
-<!--                        <input type="checkbox" id="now" value="">Now</label>-->
-                        <div class='input-group date'>
-                            <input type='text' id='dataTime' class="form-control" />
-                            <span class="input-group-addon">Now</span>
+                        <input type="checkbox" id="now" value="">Now</label>
+                        <div class='input-group date' id='dataTime'>
+                            <input type='text' readonly class="form-control" />
+                            <span class="input-group-addon">Date/Time</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -174,39 +174,37 @@
         </div>
     </div>
 
-    <div  ng-app="userApp" ng-controller="UserCtrl">
+    <div>
+    <!--<div  ng-app="userApp" ng-controller="UserCtrl">-->
         <div id="top" class="container dash">
             <!-- <script type="text/javascript">
                 $('#newStreamModal').modal()
             </script>-->
            <!--h1>Stream</h1-->
            <div class="placeholder"></div>
-           <div ng-repeat="stream in following" class="row col-md-4 col-xs-4">
+           <div ng-repeat="stream in followingStreams" ng-Cloak class="row col-md-4 col-xs-4">
                <div class="flat-card">
                     <div class="topbar">
 
                         <div class="row col-md-2 col-xs-2 card-genre">
                             <a href="#about">
-                                <img align="left" src="{{bubbles[stream].genreSrc}}"> <!-- Edit this for specific genre -->
+                                <img align="left" src="{{bubbles[stream._id].genreSrc}}"> <!-- Edit this for specific genre -->
                             </a>
                             
                         </div>
                         <div class="row col-md-offset-1 col-md-7 col-xs-offset-1 col-xs-7 card-title">
-                            <a ng-href="/streamPage?id={{stream}}">{{bubbles[stream].name}}</a> <!-- Edit this for specific title -->
+                            <a ng-href="/streamPage?id={{stream._id}}">{{bubbles[stream._id].name}}</a> <!-- Edit this for specific title -->
                         </div>
                         <div class=" col-md-1 col-xs-offset-1 col-xs-1  col-xs-offset-1 card-follow">
-                            <a href="#about">
-                                <img align="right" src="img/PlusSign.png"> <!-- Edit this if not a plus sign -->
-                            </a>
-                            
+                            <a href="#follow" style="text-decoration: none;"><p align="right" style="color:white;font-size:30px;" ng-click="toggleFollow(stream._id)" id="follow" data-id="{{stream._id}}">{{bubbles[stream._id].isFollowing && '-' || '+' }}</p></a> <!-- Edit this if not a plus sign -->  
                         </div>
                     </div>
                     <div class="midbar">
-                        <div class="row col-md-8 card-value">{{bubbles[stream].recent.value}}</div> <!-- Edit this for value -->
-                        <div class="row col-md-4 card-unit">People</div> <!-- Edit this for currency -->
+                        <div class="row col-md-6 card-value">{{bubbles[stream._id].recent}}</div> <!-- Edit this for value -->
+                        <div class="row col-md-4 card-unit">{{bubbles[stream._id].unit}}</div> <!-- Edit this for currency -->
                     </div>
                     <div class="bottombar">
-                        <div class="col-md-offset-1 row col-md-5 card-date">{{bubbles[stream].recent.time}}</div>
+                        <div class="col-md-offset-1 row col-md-5 card-date">{{bubbles[stream._id].recent.time}}</div>
                     </div>
                 </div>
             </div>
@@ -243,78 +241,87 @@
       var app = angular.module('userApp', []);
       
       app.controller('UserCtrl', function($scope, $http){
-        
+        $scope.ownerStreams = [];
+        $scope.followingStreams = [];
+        $scope.bubbles = {};
         $http.get('/user').success(function(data) {
-          $scope.users = data;
-          
-          console.log($scope.users);
-          
-          $scope.following = $scope.users.following;
-          $scope.owner = $scope.users.owner;
+            $scope.user = data;
 
-          /*for (var j = 0; j < $scope.users.owner.length; j ++) {
-            $scope.following.push($scope.users.owner[j]);
-          }*/
+            $scope.following = $scope.user.following;
+            console.log($scope.user.following)
+            $scope.owner = $scope.user.owner;
 
-          $scope.ownerObjs = []
-          
-          for (i = 0; i < $scope.owner.length; i++) {
-            $http.get('/stream?id=' + $scope.owner[i]).success((function(i){return function(data) {
-                $scope.ownerObjs.push(data);
-            }; })(i))
-          }
+            /*for (var j = 0; j < $scope.user.owner.length; j ++) {
+              $scope.following.push($scope.user.owner[j]);
+            }*/
 
-          console.log($scope.following);
-          for (i = 0; i < $scope.following.length; i++) {
-            console.log($scope.following[i]);
-            //(function(i){return function(data) {}; })(i)
-            
-            $scope.bubbles = {};
-            $http.get('/stream?id=' + $scope.following[i]).success((function(i){return function(data) {
-                var streamid = $scope.following[i];
-                $scope.bubbles[streamid] = data;
-                $scope.bubbles[streamid].recent = data.latestValue;
-
-
-                if ($scope.bubbles[streamid].genre == 'health') {
-                    $scope.bubbles[streamid].genreSrc = "/img/Health.png";
-                
-                } else if ($scope.bubbles[streamid].genre == 'finance') {
-                    $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
-                    
-                } else if ($scope.bubbles[streamid].genre == 'environment') {
-                    $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
-                    
-                } else if ($scope.bubbles[streamid].genre == 'politics') {
-                    $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
-                    
-                } else if ($scope.bubbles[streamid].genre == 'sports') {
-                    $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
-                    
-                } else if ($scope.bubbles[streamid].genre == 'tv') {
-                    $scope.bubbles[streamid].genreSrc = "/img/TV.png";
-                    
-                } else if ($scope.bubbles[streamid].genre == 'energy') {
-                    $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
-                    
-                } else if ($scope.bubbles[streamid].genre == 'education') {
-                    $scope.bubbles[streamid].genreSrc = "/img/Education.png";
-                    
-                } else if ($scope.bubbles[streamid].genre == 'business') {
-                    $scope.bubbles[streamid].genreSrc = "/img/Business.png";
-                    
-                } else if ($scope.bubbles[streamid].genre == 'inequality') {
-                    $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
-                   
+            $scope.toggleFollow = function(id) {
+                console.log('unfollow: ' + id);
+                $.post('/user', {
+                    unfollow: id
+                })
+                $scope.following.splice($scope.following.indexOf(id),1);
+                for (var i = 0; i < $scope.followingStreams.length; i ++) {
+                    if ($scope.followingStreams[i]._id == id) {
+                        $scope.followingStreams.splice(i,1);
+                        i --;
+                    }                    
                 }
+                $scope.bubbles[id] = undefined;
+            };
+          
+            for (i = 0; i < $scope.following.length; i++) {
+                $http.get('/stream?id=' + $scope.following[i]).success(function(data) {
+                    if (data != "null")
+                        $scope.followingStreams.push(data);
+                });
+            }
 
-            }; })(i))
+            for (i = 0; i < $scope.owner.length; i++) {
+                $http.get('/stream?id=' + $scope.owner[i]).success(function(data) {
+                    if (data != "null")
+                        $scope.ownerStreams.push(data);
+                });
+            }
 
-           
+            for (i = 0; i < $scope.following.length; i++) {
+                //(function(i){return function(data) {}; })(i)
+                
+                $http.get('/stream?id=' + $scope.following[i]).success((function(i){return function(data) {
+                    var streamid = $scope.following[i];
+                    if (data != "null") {
+                        $scope.bubbles[streamid] = data;
+                        latest = 0;
+                        if (data.latestValue != null) {
+                            latest = data.latestValue;
+                        }
+                        $scope.bubbles[streamid].recent = latest;
 
-          }
-          console.log($scope.bubbles)
-
+                        if ($scope.bubbles[streamid].genre == 'health') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Health.png";
+                        } else if ($scope.bubbles[streamid].genre == 'finance') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
+                        } else if ($scope.bubbles[streamid].genre == 'environment') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
+                        } else if ($scope.bubbles[streamid].genre == 'politics') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
+                        } else if ($scope.bubbles[streamid].genre == 'sports') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
+                        } else if ($scope.bubbles[streamid].genre == 'tv') {
+                            $scope.bubbles[streamid].genreSrc = "/img/TV.png";
+                        } else if ($scope.bubbles[streamid].genre == 'energy') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
+                        } else if ($scope.bubbles[streamid].genre == 'education') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Education.png";
+                        } else if ($scope.bubbles[streamid].genre == 'business') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Business.png";
+                        } else if ($scope.bubbles[streamid].genre == 'inequality') {
+                            $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
+                        }
+                    }
+                    $scope.bubbles[streamid].isFollowing = true;
+                }; })(i));
+            }
         });
       });
     </script>
@@ -323,7 +330,7 @@
       var app = angular.module('userApp', []);
       app.controller('UserCtrl', function($scope, $http){
         $http.get('/user').success(function(data) {
-          $scope.users = data;
+          $scope.user = data;
           console.log("working");
         });
       });
@@ -335,28 +342,12 @@
       var app = angular.module('userApp', []);
       app.controller('UserCtrl', function($scope, $http){
         $http.get('/user').success(function(data) {
-          $scope.users = data;
+          $scope.user = data;
           console.log("working");
         });
       });
     </script-->
-    <!--script>
-        $( '.card-value' ).each(function ( i, card-value ) {
 
-        var width = $( card-value ).width(),
-            html = '<span style="white-space:nowrap">',
-            line = $( card-value ).wrapInner( html ).children()[ 0 ],
-            n = 100;
-        
-            $( card-value ).css( 'font-size', n );
-
-            while ( $( line ).width() > width ) {
-                $( card-value ).css( 'font-size', n );
-            }
-
-            $( card-value ).text( $( line ).text() );
-        });
-    </script-->
 
  
 
@@ -394,28 +385,26 @@
                 }
             })
 
-            // $('#now').click(function() {
-            //     var thisCheck = $(this);
-            //     if (thisCheck.is (':checked')) {
-            //         //$('#dataTime').val('now');
-            //         console.log('checked');
-            //     } else {
-            //         console.log('unchecked');
-            //     }
-            // });
+            $('#now').click(function() {
+                var thisCheck = $(this);
+                if (thischeck.is (':checked')) {
+                    //$('#dataTime').val('now');
+                    console.log('checked');
+                } else {
+                    console.log('unchecked');
+                }
+            });
 
 
             $('#createBubble').click(function(){
 
                 var time = 0;
                 //Need to fix up time
-                d = new Date($('#dataTime').val())
-                debugger
-                time = d.getTime();
-                // if ($('#now').checked()) {
-                //     time = Date.now();
-                // } else {
-                // }
+                if ($('#now').checked()) {
+                    time = Date.now();
+                } else {
+                    console.log($('#dataTime').val())
+                }
 
                 if ($('#dataStream').val() != '' && $('#dataValue').val()!= '' && $('#dataSource').val()!= '') {
                     $.post('/point', {
@@ -432,7 +421,7 @@
                     $('#dataSource').val('')
                     $('#dataTime').val('')
                     $('#now').val('')
-                    $('#newBubbleModal').modal('hide');
+                    $('#newStreamModal').modal('hide');
                 }
             })
 

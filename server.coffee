@@ -49,14 +49,14 @@ User_Schema = mongoose.Schema({
   picture: String,
   bio: String,
   isVerified: Boolean
-});
+})
 
 User = mongoose.model('User', User_Schema)
 
 Client_Schema = mongoose.Schema({
   user_id: String,
   socket: Object
-});
+})
 
 Client = mongoose.model('Client', Client_Schema)
 
@@ -72,7 +72,7 @@ Stream_Schema = mongoose.Schema({
   latestValue: Number,
   latestTime: String,
   subscriptions: Array #list of users to notify on update event
-});
+})
 
 Stream = mongoose.model('Stream', Stream_Schema)
 
@@ -83,7 +83,7 @@ Point_Schema = mongoose.Schema({
   time: String, #date
   created: String, #date
   creator: String #creater id
-});
+})
 
 Point = mongoose.model('Point', Point_Schema)
 #Stream.remove({}, ->)
@@ -161,6 +161,14 @@ passport.use new LocalStrategy { usernameField: 'email', passwordField: 'passwor
 
 app = express()
 
+#CORS middleware
+allowCrossDomain = (req, res, next) ->
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+  res.header('Access-Control-Allow-Headers', 'Content-Type')
+
+  next()
+
 app.set 'views', __dirname + '/public'
 app.set 'view engine', 'ejs'
 #app.use express.logger()
@@ -170,9 +178,10 @@ app.use express.errorHandler { dumpExceptions: true, showStack: true }
 app.use express.session secret: 'data fish secret'
 app.use passport.initialize()
 app.use passport.session()
-app.engine('html', require('ejs').renderFile);
+app.engine('html', require('ejs').renderFile)
 #app.use(flash())
 
+app.use(allowCrossDomain)
 app.use app.router
 app.use '/img', express.static __dirname + '/img'
 app.use '/font-awesome', express.static __dirname + '/font-awesome'
@@ -283,7 +292,19 @@ app.get('/account', (req, res) ->
 )
 
 app.get('/streamPage', (req, res) ->
-  res.render('stream.html')
+  if req.query.id?
+    Stream.findOne({'_id': req.query.id}, (err, stream) ->
+      console.log(err) if err?
+      if stream?
+        if req.user?
+          res.render('stream.html')
+        else
+          res.render('publicstream.html')
+      else
+        res.redirect('/')
+    )
+  else
+    res.redirect('/') 
 )
 
 app.get('/searchPage', (req, res) ->
@@ -430,11 +451,16 @@ app.post('/user', (req, res) ->
             user.bio = req.body.bio if req.body.bio?
             user.isVerified = req.body.isVerified if req.body.isVerified?
 
-            #if req.body.password?, encrypt
+            #if req.body.password?, encrypt and replace
 
-            user.following = req.body.following if req.body.following?
-            user.favorites = req.body.favorites if req.body.favorites?
-            user.editor = req.body.editor if req.body.editor?
+            user.following.push(req.body.follow) if req.body.follow?
+            user.following.splice(user.following.indexOf(req.body.unfollow),1) if req.body.unfollow? and user.following.indexOf(req.body.unfollow) >= 0
+
+            user.favorites.push(req.body.favorite) if req.body.favorite?
+            user.favorites.splice(user.favorites.indexOf(req.body.unfavorite),1) if req.body.unfavorite? and user.favorites.indexOf(req.body.unfavorite) >= 0
+
+            user.editor.push(req.body.edit) if req.body.edit?
+            user.editor.splice(user.editor.indexOf(req.body.unedit),1) if req.body.unedit? and user.editor.indexOf(req.body.unedit) >= 0
 
             user.save()
             res.json(publiclyViewableUser(user))
@@ -493,11 +519,14 @@ app.get('/stream', (req, res) ->
             latestTime: stream.latestTime,
             points: points
           }
+          res.header('Access-Control-Allow-Origin', '*')
+          res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+          res.header('Access-Control-Allow-Headers', 'Content-Type')
           res.json(result)
         )
         #Get all points on this stream
       else
-        res.json()
+        res.json(null)
     )
   else
     res.json(null)
@@ -568,7 +597,7 @@ app.get('/point', (req, res) ->
     res.json(null)
 )
 
-sendgrid  = require('sendgrid')('gavinovsak', 'remote01');
+sendgrid  = require('sendgrid')('gavinovsak', 'remote01')
 
 app.post('/point', (req, res) -> 
   #Adding a new point to the stream.
@@ -598,8 +627,8 @@ app.post('/point', (req, res) ->
         }, (err, json) ->
           if err? 
             return console.error(err)
-          console.log(json);
-        );
+          console.log(json)
+        )
         res.json(newPoint)
         #Make point and say it is for the stream
       else
