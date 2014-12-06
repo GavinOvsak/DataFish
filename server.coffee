@@ -619,7 +619,7 @@ app.post('/point', (req, res) ->
             for listener in listeners[stream._id]
               listener.emit('newData', newPoint)
 
-        sendgrid.send({
+        ###sendgrid.send({
           to:       req.user.email,
           from:     'ovsak.gavin@gmail.com',
           subject:  'Your data stream updated!',
@@ -628,7 +628,7 @@ app.post('/point', (req, res) ->
           if err? 
             return console.error(err)
           console.log(json)
-        )
+        )###
         res.json(newPoint)
         #Make point and say it is for the stream
       else

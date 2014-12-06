@@ -239,9 +239,20 @@
 
     <script>
       var app = angular.module('userApp', []);
+      var socket = io.connect();
       
       app.controller('UserCtrl', function($scope, $http){
         $scope.ownerStreams = [];
+        $scope.bubbles = {};
+        socket.on('newData', function(data) {
+
+            $scope.bubbles[data.stream_id].latestValue = data.value;
+            $scope.bubbles[data.stream_id].recent = data.value;
+            $scope.bubbles[data.stream_id].points.push(data);
+
+            $scope.$digest();
+        });
+
         $http.get('/user').success(function(data) {
             $scope.user = data;
 
@@ -280,10 +291,11 @@
             for (i = 0; i < $scope.owner.length; i++) {
                 //(function(i){return function(data) {}; })(i)
                 
-                $scope.bubbles = {};
+                
                 $http.get('/stream?id=' + $scope.owner[i]).success((function(i){return function(data) {
                     var streamid = $scope.owner[i];
                     if (data != "null") {
+                        socket.emit('listen', {streams: [streamid]});
                         $scope.bubbles[streamid] = data;
                         latest = 0;
                         if (data.latestValue != null) {
@@ -314,6 +326,9 @@
                         }
 
                         $scope.bubbles[streamid].isFollowing = $scope.following.indexOf(streamid) >= 0;
+                        $scope.$watch('bubbles.'+streamid+'.recent', function(newVal, oldVal){
+                            console.log('changed');
+                        }, true);
                     }
                 }; })(i));
             }
@@ -348,11 +363,10 @@
 
     <script>
         $(document).ready(function() {
-            var socket = io.connect();
-            socket.on('newData', function(data) {
+//            var socket = io.connect();
+/*            socket.on('newData', function(data) {
                 console.log(data);
-            })
-            socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
+            })*/
             
             $('#dataTime').datetimepicker();
 

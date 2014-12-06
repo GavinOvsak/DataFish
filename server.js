@@ -773,17 +773,18 @@ app.post('/point', function(req, res) {
             listener.emit('newData', newPoint);
           }
         }
-        sendgrid.send({
-          to: req.user.email,
-          from: 'ovsak.gavin@gmail.com',
-          subject: 'Your data stream updated!',
-          text: 'New bubble about ' + stream.name + ': ' + req.body.value + ' ' + stream.unit + '. See more at http://datafish.nodejitsu.com'
-        }, function(err, json) {
-          if (err != null) {
-            return console.error(err);
-          }
-          return console.log(json);
-        });
+
+        /*sendgrid.send({
+          to:       req.user.email,
+          from:     'ovsak.gavin@gmail.com',
+          subject:  'Your data stream updated!',
+          text:     'New bubble about ' + stream.name + ': ' + req.body.value + ' ' + stream.unit + '. See more at http://datafish.nodejitsu.com'
+        }, (err, json) ->
+          if err? 
+            return console.error(err)
+          console.log(json)
+        )
+         */
         return res.json(newPoint);
       } else {
         return res.json();

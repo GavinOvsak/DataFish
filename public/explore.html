@@ -231,107 +231,114 @@
     <!--<script src="javascripts/sidr/jquery.sidr.js"></script>-->
 
     <script>
-      var app = angular.module('userApp', []);
+        var app = angular.module('userApp', []);
+        var socket = io.connect();
       
-      app.controller('UserCtrl', function($scope, $http){
-        $scope.ownerStreams = [];
-        $scope.bubbles = {};
-        $http.get('/user').success(function(data) {
-            $scope.user = data;
-            console.log($scope.user);
+        app.controller('UserCtrl', function($scope, $http){
+            $scope.ownerStreams = [];
+            $scope.bubbles = {};
 
-            $scope.following = $scope.user.following;
-            $scope.owner = $scope.user.owner;
+            socket.on('newData', function(data) {
 
-            /*for (var j = 0; j < $scope.user.owner.length; j ++) {
-            $scope.following.push($scope.user.owner[j]);
-            }*/
+                $scope.bubbles[data.stream_id].latestValue = data.value;
+                $scope.bubbles[data.stream_id].recent = data.value;
+                $scope.bubbles[data.stream_id].points.push(data);
 
-            console.log($scope.following);
-            
-            $scope.toggleFollow = function(id) {
-                if ($scope.bubbles[id].isFollowing) {
-                    console.log('unfollow: ' + id);
-                    $.post('/user', {
-                        unfollow: id
-                    })
-                    $scope.bubbles[id].isFollowing = false;
-                } else {
-                    console.log('follow: ' + id);
-                    $.post('/user', {
-                        follow: id
-                    })
-                    $scope.bubbles[id].isFollowing = true;
-                }
-            };
-          
-            for (i = 0; i < $scope.owner.length; i++) {
-                $http.get('/stream?id=' + $scope.owner[i]).success(function(data) {
-                    if (data != "null")
-                        $scope.ownerStreams.push(data);
-                });
-            }
-
-            $http.get('/hack/allStreams').success(function(data) {
-                $scope.all = data;
-                console.log($scope.all);
-                for (i = 0; i < $scope.all.length; i++) {
-                    //console.log($scope.all[i]);
-                    //(function(i){return function(data) {}; })(i)
-                    
-                    
-                    $http.get('/stream?id=' + $scope.all[i]._id).success((function(i){return function(data) {
-                        var streamid = $scope.all[i]._id;
-                        //console.log(data)
-                        if (data != "null") {
-                            $scope.bubbles[streamid] = data;
-                            latest = 0;
-                            if (data.latestValue != null) {
-                                latest = data.latestValue;
-                            }
-                            $scope.bubbles[streamid].recent = latest;
-                            //console.log(data.latestValue);
-
-                            if ($scope.bubbles[streamid].genre == 'health') {
-                                $scope.bubbles[streamid].genreSrc = "/img/Health.png";
-                            
-                            } else if ($scope.bubbles[streamid].genre == 'finance') {
-                                $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
-                                
-                            } else if ($scope.bubbles[streamid].genre == 'environment') {
-                                $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
-                                
-                            } else if ($scope.bubbles[streamid].genre == 'politics') {
-                                $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
-                                
-                            } else if ($scope.bubbles[streamid].genre == 'sports') {
-                                $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
-                                
-                            } else if ($scope.bubbles[streamid].genre == 'tv') {
-                                $scope.bubbles[streamid].genreSrc = "/img/TV.png";
-                                
-                            } else if ($scope.bubbles[streamid].genre == 'energy') {
-                                $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
-                                
-                            } else if ($scope.bubbles[streamid].genre == 'education') {
-                                $scope.bubbles[streamid].genreSrc = "/img/Education.png";
-                                
-                            } else if ($scope.bubbles[streamid].genre == 'business') {
-                                $scope.bubbles[streamid].genreSrc = "/img/Business.png";
-                                
-                            } else if ($scope.bubbles[streamid].genre == 'inequality') {
-                                $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
-                               
-                            }
-                        }
-
-                        $scope.bubbles[streamid].isFollowing = $scope.following.indexOf(streamid) >= 0
-                   }; })(i));
-                }
+                $scope.$digest();
             });
-          console.log($scope.bubbles)
+
+            $http.get('/user').success(function(data) {
+                $scope.user = data;
+                console.log($scope.user);
+
+                $scope.following = $scope.user.following;
+                $scope.owner = $scope.user.owner;
+
+                /*for (var j = 0; j < $scope.user.owner.length; j ++) {
+                $scope.following.push($scope.user.owner[j]);
+                }*/
+
+                
+                $scope.toggleFollow = function(id) {
+                    if ($scope.bubbles[id].isFollowing) {
+                        console.log('unfollow: ' + id);
+                        $.post('/user', {
+                            unfollow: id
+                        })
+                        $scope.bubbles[id].isFollowing = false;
+                    } else {
+                        console.log('follow: ' + id);
+                        $.post('/user', {
+                            follow: id
+                        })
+                        $scope.bubbles[id].isFollowing = true;
+                    }
+                };
+              
+                for (i = 0; i < $scope.owner.length; i++) {
+                    $http.get('/stream?id=' + $scope.owner[i]).success(function(data) {
+                        if (data != "null")
+                            $scope.ownerStreams.push(data);
+                    });
+                }
+
+                $http.get('/hack/allStreams').success(function(data) {
+                    $scope.all = data;
+                    console.log($scope.all);
+                    for (i = 0; i < $scope.all.length; i++) {
+                        //console.log($scope.all[i]);
+                        //(function(i){return function(data) {}; })(i)
+                        
+                        $http.get('/stream?id=' + $scope.all[i]._id).success((function(i){return function(data) {
+                            var streamid = $scope.all[i]._id;
+                            //console.log(data)
+                            if (data != "null") {
+                                socket.emit('listen', {streams: [streamid]});
+                                $scope.bubbles[streamid] = data;
+                                latest = 0;
+                                if (data.latestValue != null) {
+                                    latest = data.latestValue;
+                                }
+
+                                $scope.bubbles[streamid].recent = latest;
+
+                                //console.log(data.latestValue);
+
+                                if ($scope.bubbles[streamid].genre == 'health') {
+                                    $scope.bubbles[streamid].genreSrc = "/img/Health.png";
+                                
+                                } else if ($scope.bubbles[streamid].genre == 'finance') {
+                                    $scope.bubbles[streamid].genreSrc = "/img/Finance.png";
+                                    
+                                } else if ($scope.bubbles[streamid].genre == 'environment') {
+                                    $scope.bubbles[streamid].genreSrc = "/img/Environment.png";
+                                } else if ($scope.bubbles[streamid].genre == 'politics') {
+                                    $scope.bubbles[streamid].genreSrc = "/img/Politics.png";
+                                } else if ($scope.bubbles[streamid].genre == 'sports') {
+                                    $scope.bubbles[streamid].genreSrc = "/img/Sports.png";
+                                } else if ($scope.bubbles[streamid].genre == 'tv') {
+                                    $scope.bubbles[streamid].genreSrc = "/img/TV.png";
+                                } else if ($scope.bubbles[streamid].genre == 'energy') {
+                                    $scope.bubbles[streamid].genreSrc = "/img/Energy.png";
+                                } else if ($scope.bubbles[streamid].genre == 'education') {
+                                    $scope.bubbles[streamid].genreSrc = "/img/Education.png";
+                                } else if ($scope.bubbles[streamid].genre == 'business') {
+                                    $scope.bubbles[streamid].genreSrc = "/img/Business.png";
+                                } else if ($scope.bubbles[streamid].genre == 'inequality') {
+                                    $scope.bubbles[streamid].genreSrc = "/img/Inequality.png";
+                                }
+                            }
+
+                            $scope.bubbles[streamid].isFollowing = $scope.following.indexOf(streamid) >= 0;
+                            $scope.$watch('bubbles.'+streamid+'.recent', function(newVal, oldVal){
+                                console.log('changed');
+                            }, true);
+                       }; })(i));
+                    }
+                });
+              console.log($scope.bubbles)
+            });
         });
-      });
     </script>
 
     <!--script>
@@ -361,11 +368,6 @@
 
     <script>
         $(document).ready(function() {
-            var socket = io.connect();
-            socket.on('newData', function(data) {
-                console.log(data);
-            })
-            socket.emit('listen', {streams: ['546853c0f48b87e385ddf7fd']});
             
             
 

@@ -286,7 +286,7 @@
       google.setOnLoadCallback(function() {
         //var table = new google.visualization.DataTable();
 
-        $.get('http://localhost:8081/stream?id=' + getParameterByName('id'), function(data) {
+        $.get('http://datafish.nodejitsu.com/stream?id=' + getParameterByName('id'), function(data) {
           /*
           $.each(data.points, function (index, point) {
               $('#myElement').data('key',jsonObject);
